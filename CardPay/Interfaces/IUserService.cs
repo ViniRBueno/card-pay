@@ -1,0 +1,19 @@
+﻿using CardPay.Entities;
+using CardPay.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace CardPay.Interfaces
+{
+    public interface IUserService
+    {
+        bool ValidateCPF(string cpf);
+        string ValidateIntegrity(string cpf);
+        string ValidateUser(UserModel user);
+        int CreateUser(UserModel user);
+        User GetUser(int id);
+        bool UpdatePassword(NewPasswordModel passwordModel, int id);
+    }
+}
