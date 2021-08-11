@@ -1,23 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity.ModelConfiguration;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace CardPay.Entities.Map
 {
-    public class ReciptMap : EntityTypeConfiguration<Recipt>
+    public class ReciptMap : IEntityTypeConfiguration<Recipt>
     {
-        public ReciptMap()
+        public void Configure(EntityTypeBuilder<Recipt> builder)
         {
+            builder.ToTable("Tb_Recipt");
 
-            ToTable("Tb_Recipt");
+            builder.HasKey(x => x.id_recipt);
+            builder.Property(x => x.id_recipt).HasColumnName("id_recipt");
 
-            HasKey(x => x.id_recipt).Property(x => x.id_recipt).HasColumnName("id_recipt");
+            builder.Property(x => x.id_ticket).HasColumnName("id_ticket");
 
-            Property(x => x.id_ticket).HasColumnName("id_ticket");
-
-            Property(x => x.recipt_value).HasColumnName("recipt_value");
+            builder.Property(x => x.recipt_value).HasColumnName("recipt_value");
         }
     }
 }

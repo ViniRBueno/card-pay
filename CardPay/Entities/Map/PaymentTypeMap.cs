@@ -1,20 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity.ModelConfiguration;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace CardPay.Entities.Map
 {
-    public class PaymentTypeMap : EntityTypeConfiguration<PaymentType>
+    public class PaymentTypeMap : IEntityTypeConfiguration<PaymentType>
     {
-        public PaymentTypeMap()
+        public void Configure(EntityTypeBuilder<PaymentType> builder)
         {
-            ToTable("Tb_PaymentType");
+            builder.ToTable("Tb_PaymentType");
 
-            HasKey(x => x.id_paymenttype).Property(x => x.id_paymenttype).HasColumnName("id_paymenttype");
+            builder.HasKey(x => x.id_paymenttype);
+            builder.Property(x => x.id_paymenttype).HasColumnName("id_paymenttype");
 
-            Property(x => x.paymenttype_name).HasColumnName("paymenttype_name");
+            builder.Property(x => x.paymenttype_name).HasColumnName("paymenttype_name");
         }
     }
 }

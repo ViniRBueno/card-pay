@@ -1,28 +1,30 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System;
 using System.Collections.Generic;
 using System.Data.Entity.ModelConfiguration;
 using System.Text;
 
 namespace CardPay.Entities.Map
 {
-    public class UserMap : EntityTypeConfiguration<User>
+    public class UserMap : IEntityTypeConfiguration<User>
     {
-        public UserMap()
+        public void Configure(EntityTypeBuilder<User> builder)
         {
-            ToTable("Tb_User");
+            builder.ToTable("Tb_User");
 
-            HasKey(x => x.id_user).Property(x => x.id_user).HasColumnName("id_user");
+            builder.HasKey(x => x.id_user);
+            builder.Property(x => x.id_user).HasColumnName("id_user");
 
-            Property(x => x.user_name).HasColumnName("user_name");
+            builder.Property(x => x.user_name).HasColumnName("user_name");
 
-            Property(x => x.cpf).HasColumnName("cpf");
+            builder.Property(x => x.cpf).HasColumnName("cpf");
 
-            Property(x => x.login).HasColumnName("email");
+            builder.Property(x => x.email).HasColumnName("email");
 
-            Property(x => x.password).HasColumnName("password");
+            builder.Property(x => x.password).HasColumnName("password");
 
-            Property(x => x.password).HasColumnName("password");
-
+            builder.Property(x => x.birth_date).HasColumnName("birth_date");
         }
     }
 }

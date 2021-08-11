@@ -58,10 +58,10 @@ namespace CardPay.Services
             if (user.user_name.Length > 100)
                 return "Seu nome deve ter menos de 100 caracteres";
 
-            if (string.IsNullOrEmpty(user.login))
+            if (string.IsNullOrEmpty(user.email))
                 return "Login inválido";
 
-            if (user.login.Length > 11)
+            if (user.email.Length > 11)
                 return "Seu login deve ter menos de 11 caracteres";
 
             return ValidatePassword(user.password);

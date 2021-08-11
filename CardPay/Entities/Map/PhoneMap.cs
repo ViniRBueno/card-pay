@@ -1,24 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity.ModelConfiguration;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace CardPay.Entities.Map
 {
-    public class PhoneMap : EntityTypeConfiguration<Phone>
+    public class PhoneMap : IEntityTypeConfiguration<Phone>
     {
-        public PhoneMap()
+        public void Configure(EntityTypeBuilder<Phone> builder)
         {
-            ToTable("Tb_Phone");
+            builder.ToTable("Tb_Phone");
 
-            HasKey(x => x.id_phone).Property(x => x.id_phone).HasColumnName("id_phone");
+            builder.HasKey(x => x.id_phone);
+            builder.Property(x => x.id_phone).HasColumnName("id_phone");
 
-            Property(x => x.id_user).HasColumnName("id_user");
+            builder.Property(x => x.id_user).HasColumnName("id_user");
 
-            Property(x => x.id_phonetype).HasColumnName("id_phonetype");
+            builder.Property(x => x.id_phonetype).HasColumnName("id_phonetype");
 
-            Property(x => x.phone_number).HasColumnName("phone_number");
+            builder.Property(x => x.phone_number).HasColumnName("phone_number");
         }
     }
 }

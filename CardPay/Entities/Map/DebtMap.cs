@@ -1,25 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity.ModelConfiguration;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace CardPay.Entities.Map
 {
-    public class DebtMap : EntityTypeConfiguration<Debt>
+    public class DebtMap : IEntityTypeConfiguration<Debt>
     {
-        public DebtMap()
+        public void Configure(EntityTypeBuilder<Debt> builder)
         {
 
-            ToTable("Tb_Debt");
+            builder.ToTable("Tb_Debt");
 
-            HasKey(x => x.id_debt).Property(x => x.id_debt).HasColumnName("id_debt");
+            builder.HasKey(x => x.id_debt);
+            builder.Property(x => x.id_debt).HasColumnName("id_debt");
 
-            Property(x => x.id_user).HasColumnName("id_user");
+            builder.Property(x => x.id_user).HasColumnName("id_user");
 
-            Property(x => x.id_status).HasColumnName("id_status");
+            builder.Property(x => x.id_status).HasColumnName("id_status");
 
-            Property(x => x.debt_value).HasColumnName("debt_value");
+            builder.Property(x => x.debt_value).HasColumnName("debt_value");
         }
     }
 }

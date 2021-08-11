@@ -1,22 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity.ModelConfiguration;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace CardPay.Entities.Map
 {
-    public class StatusMap : EntityTypeConfiguration<Status>
+    public class StatusMap : IEntityTypeConfiguration<Status>
     {
-        public StatusMap()
+        public void Configure(EntityTypeBuilder<Status> builder)
         {
-            ToTable("Tb_Status");
+            builder.ToTable("Tb_Status");
 
-            HasKey(x => x.id_status).Property(x => x.id_status).HasColumnName("id_status");
+            builder.HasKey(x => x.id_status);
+            builder.Property(x => x.id_status).HasColumnName("id_status");
 
-            Property(x => x.name_status).HasColumnName("name_status");
+            builder.Property(x => x.name_status).HasColumnName("name_status");
 
-            Property(x => x.status_description).HasColumnName("status_description");
+            builder.Property(x => x.status_description).HasColumnName("status_description");
         }
     }
 }

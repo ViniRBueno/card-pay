@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System;
 using System.Collections.Generic;
 using System.Data.Entity.ModelConfiguration;
 using System.Linq;
@@ -6,15 +8,16 @@ using System.Threading.Tasks;
 
 namespace CardPay.Entities.Map
 {
-    public class StateMap : EntityTypeConfiguration<State>
+    public class StateMap : IEntityTypeConfiguration<State>
     {
-        public StateMap()
+        public void Configure(EntityTypeBuilder<State> builder)
         {
-            ToTable("Tb_State");
+            builder.ToTable("Tb_State");
 
-            HasKey(x => x.id_state).Property(x => x.id_state).HasColumnName("id_state");
+            builder.HasKey(x => x.id_state);
+            builder.Property(x => x.id_state).HasColumnName("id_state");
 
-            Property(x => x.name_state).HasColumnName("name_state");
+            builder.Property(x => x.name_state).HasColumnName("name_state");
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System;
 using System.Collections.Generic;
 using System.Data.Entity.ModelConfiguration;
 using System.Linq;
@@ -6,20 +8,21 @@ using System.Threading.Tasks;
 
 namespace CardPay.Entities.Map
 {
-    public class StatusHistoryMap : EntityTypeConfiguration<StatusHistory>
+    public class StatusHistoryMap : IEntityTypeConfiguration<StatusHistory>
     {
-        public StatusHistoryMap()
+        public void Configure(EntityTypeBuilder<StatusHistory> builder)
         {
 
-            ToTable("Tb_StatusHistory");
+            builder.ToTable("Tb_StatusHistory");
 
-            HasKey(x => x.id_statushistory).Property(x => x.id_statushistory).HasColumnName("id_statushistory");
+            builder.HasKey(x => x.id_statushistory);
+            builder.Property(x => x.id_statushistory).HasColumnName("id_statushistory");
 
-            Property(x => x.id_debt).HasColumnName("id_debt");
+            builder.Property(x => x.id_debt).HasColumnName("id_debt");
 
-            Property(x => x.id_status).HasColumnName("id_status");
+            builder.Property(x => x.id_status).HasColumnName("id_status");
 
-            Property(x => x.date_status).HasColumnName("date_status");
+            builder.Property(x => x.date_status).HasColumnName("date_status");
         }
     }
 }
