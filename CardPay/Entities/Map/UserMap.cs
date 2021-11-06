@@ -25,6 +25,8 @@ namespace CardPay.Entities.Map
             builder.Property(x => x.password).HasColumnName("password");
 
             builder.Property(x => x.birth_date).HasColumnName("birth_date");
+
+            builder.Property(x => x.salary).HasColumnName("salary");
         }
     }
 }

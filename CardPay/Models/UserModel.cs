@@ -12,5 +12,6 @@ namespace CardPay.Models
         public string email { get; set; }
         public string password { get; set; }
         public DateTime birth_date { get; set; }
+        public decimal salary { get; set; }
     }
 }

@@ -13,6 +13,7 @@ namespace CardPay.Entities
         public string email { get; set; }
         public string password { get; set; }
         public DateTime birth_date { get; set; }
+        public decimal salary { get; set; }
 
         public User Convert(UserModel userModel)
         {
@@ -23,6 +24,7 @@ namespace CardPay.Entities
             user.user_name = userModel.user_name;
             user.cpf = userModel.cpf;
             user.birth_date = userModel.birth_date;
+            user.salary = userModel.salary;
 
             return user;
         }

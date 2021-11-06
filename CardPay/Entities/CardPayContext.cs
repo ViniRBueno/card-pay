@@ -7,36 +7,28 @@ namespace CardPay.Entities
         public CardPayContext(DbContextOptions<CardPayContext> contextOptions) : base(contextOptions)
         { }
 
-        public DbSet<Debt> debts { get; set; }
-        public DbSet<DebtType> debtTypes { get; set; }
-        public DbSet<Payment> payments { get; set; }
-        public DbSet<PaymentType> paymentTypes { get; set; }
         public DbSet<User> users { get; set; }
-        public DbSet<Address> addresses { get; set; }
-        public DbSet<Phone> phones { get; set; }
-        public DbSet<PhoneType> phoneTypes { get; set; }
-        public DbSet<Recipt> recipts { get; set; }
-        public DbSet<State> states { get; set; }
         public DbSet<Status> statuses { get; set; }
-        public DbSet<StatusHistory> statusHistories { get; set; }
+        public DbSet<Account> accounts { get; set; }
+        public DbSet<Bank> banks { get; set; }
+        public DbSet<Family> families { get; set; }
+        public DbSet<FamilyMember> familyMembers { get; set; }
+        public DbSet<Loan> loans { get; set; }
+        public DbSet<LoanStatus> loanstatuses { get; set; }
+        public DbSet<Parcel> parcels { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Debt>(new Map.DebtMap().Configure);
-            modelBuilder.Entity<Address>(new Map.AddressMap().Configure);
-            modelBuilder.Entity<Payment>(new Map.PaymentMap().Configure);
-            modelBuilder.Entity<PaymentType>(new Map.PaymentTypeMap().Configure);
-            modelBuilder.Entity<Phone>(new Map.PhoneMap().Configure);
-            modelBuilder.Entity<PhoneType>(new Map.PhoneTypeMap().Configure);
-            modelBuilder.Entity<Recipt>(new Map.ReciptMap().Configure);
-            modelBuilder.Entity<State>(new Map.StateMap().Configure);
-            modelBuilder.Entity<StatusHistory>(new Map.StatusHistoryMap().Configure);
             modelBuilder.Entity<User>(new Map.UserMap().Configure);
             modelBuilder.Entity<Status>(new Map.StatusMap().Configure);
-            modelBuilder.Entity<Ticket>(new Map.TicketMap().Configure);
-
-            //modelBuilder.Configurations.Add(new Map.TicketMap());
-
+            modelBuilder.Entity<Account>(new Map.AccountMap().Configure);
+            modelBuilder.Entity<Bank>(new Map.BankMap().Configure);
+            modelBuilder.Entity<Family>(new Map.FamilyMap().Configure);
+            modelBuilder.Entity<FamilyMember>(new Map.FamilyMemberMap().Configure);
+            modelBuilder.Entity<Loan>(new Map.LoanMap().Configure);
+            modelBuilder.Entity<LoanStatus>(new Map.LoanStatusMap().Configure);
+            modelBuilder.Entity<Parcel>(new Map.ParcelMap().Configure);
         }
     }
 }
