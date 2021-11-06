@@ -12,7 +12,7 @@ namespace CardPay.Interfaces
         bool ValidateCPF(string cpf);
         string ValidateIntegrity(string cpf);
         string ValidateUser(UserModel user);
-        int CreateUser(UserModel user);
+        string CreateUser(UserModel user);
         User GetUser(int id);
         bool UpdatePassword(NewPasswordModel passwordModel, int id);
     }

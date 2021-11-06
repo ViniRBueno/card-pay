@@ -16,7 +16,7 @@ namespace CardPay.Services
             }
         }
 
-        public int CreateUser(UserModel userModel)
+        public string CreateUser(UserModel userModel)
         {
             var user = new User().Convert(userModel);
 
@@ -25,7 +25,7 @@ namespace CardPay.Services
                 var newUser = context.users.Add(user);
                 context.SaveChanges();
 
-                return newUser.id_user;
+                return null;
             }
         }
 
