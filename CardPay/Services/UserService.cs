@@ -1,6 +1,8 @@
 ﻿using CardPay.Entities;
 using CardPay.Interfaces;
 using CardPay.Models;
+using Microsoft.EntityFrameworkCore;
+using System.Configuration;
 using System.Linq;
 using System.Text.RegularExpressions;
 
@@ -8,43 +10,45 @@ namespace CardPay.Services
 {
     public class UserService : IUserService
     {
+        CardPayContext _context;
+        public UserService()
+        {
+            var contextOptions = new DbContextOptionsBuilder<CardPayContext>()
+                .UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=Test")
+                .Options;
+
+            _context = new CardPayContext(contextOptions);
+        }
+
         public User GetUser(int id)
         {
-            using (var context = new CardPayContext())
-            {
-                return context.users.Where(x => x.id_user == id).FirstOrDefault() ?? new User();
-            }
+            return _context.users.Where(x => x.id_user == id).FirstOrDefault() ?? new User();
         }
 
         public string CreateUser(UserModel userModel)
         {
             var user = new User().Convert(userModel);
 
-            using (var context = new CardPayContext())
-            {
-                var newUser = context.users.Add(user);
-                context.SaveChanges();
+            _ = _context.users.Add(user);
+            _context.SaveChanges();
 
-                return null;
-            }
+            return null;
         }
 
         public bool UpdatePassword(NewPasswordModel passwordModel, int id)
         {
-            using (var context = new CardPayContext())
-            {
-                var user = context.users.Where(x => x.id_user == id).FirstOrDefault();
 
-                var validate = ValidateUpdatePassword(passwordModel, user);
+            var user = _context.users.Where(x => x.id_user == id).FirstOrDefault();
 
-                if (!validate)
-                    return false;
+            var validate = ValidateUpdatePassword(passwordModel, user);
 
-                user.password = passwordModel.newPassword;
-                context.SaveChanges();
+            if (!validate)
+                return false;
 
-                return true;
-            }
+            user.password = passwordModel.newPassword;
+            _context.SaveChanges();
+
+            return true;
         }
 
         public string ValidateUser(UserModel user)

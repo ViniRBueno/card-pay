@@ -4,6 +4,10 @@ namespace CardPay.Entities
 {
     public class CardPayContext : DbContext
     {
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=Test");
+        }
         public CardPayContext(DbContextOptions<CardPayContext> contextOptions) : base(contextOptions)
         { }
 
