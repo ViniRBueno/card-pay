@@ -34,8 +34,8 @@ namespace CardPay.Controllers
         {
             var validate = _userService.ValidateUser(user);
 
-            if (string.IsNullOrEmpty(validate))
-                return UnprocessableEntity(validate);
+            if (!string.IsNullOrEmpty(validate))
+                return UnprocessableEntity(new { message = validate } );
 
             _userService.CreateUser(user);
 

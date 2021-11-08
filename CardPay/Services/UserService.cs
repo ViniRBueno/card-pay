@@ -29,10 +29,10 @@ namespace CardPay.Services
         {
             var user = new User().Convert(userModel);
 
-            _ = _context.users.Add(user);
+            _context.users.Add(user);
             _context.SaveChanges();
 
-            return null;
+            return user.id_user.ToString();
         }
 
         public bool UpdatePassword(NewPasswordModel passwordModel, int id)
@@ -68,7 +68,7 @@ namespace CardPay.Services
             if (string.IsNullOrEmpty(user.email))
                 return "Login inválido";
 
-            if (user.email.Length > 11)
+            if (user.email.Length < 11)
                 return "Seu login deve ter menos de 11 caracteres";
 
             return ValidatePassword(user.password);
