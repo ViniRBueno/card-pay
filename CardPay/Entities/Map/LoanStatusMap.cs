@@ -7,7 +7,7 @@ namespace CardPay.Entities.Map
     {
         public void Configure(EntityTypeBuilder<LoanStatus> builder)
         {
-            builder.ToTable("Tb_Status");
+            builder.ToTable("Tb_LoanStatus");
 
             builder.HasKey(x => x.id_loanstatus);
             builder.Property(x => x.id_loanstatus).HasColumnName("id_status");

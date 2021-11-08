@@ -6,7 +6,7 @@ namespace CardPay.Entities
     {
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=Test");
+            optionsBuilder.UseSqlServer(@"Server=localhost;Database=DB_CARD_PAY;Integrated Security=True");
         }
         public CardPayContext(DbContextOptions<CardPayContext> contextOptions) : base(contextOptions)
         { }

@@ -68,7 +68,7 @@ namespace CardPay.Controllers
             if (!isValid)
                 return UnprocessableEntity("CPF Inválido!");
 
-            var message = _userService.ValidateIntegrity(cpf);
+            var message = _userService.ValidateExists(cpf);
 
             return Ok(message);
         }

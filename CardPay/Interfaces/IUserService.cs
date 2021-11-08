@@ -10,7 +10,7 @@ namespace CardPay.Interfaces
     public interface IUserService
     {
         bool ValidateCPF(string cpf);
-        string ValidateIntegrity(string cpf);
+        string ValidateExists(string cpf);
         string ValidateUser(UserModel user);
         string CreateUser(UserModel user);
         User GetUser(int id);

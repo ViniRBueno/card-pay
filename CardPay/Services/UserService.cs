@@ -14,7 +14,7 @@ namespace CardPay.Services
         public UserService()
         {
             var contextOptions = new DbContextOptionsBuilder<CardPayContext>()
-                .UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=Test")
+                .UseSqlServer(@"Server=localhost;Database=DB_CARD_PAY;Integrated Security=True")
                 .Options;
 
             _context = new CardPayContext(contextOptions);
@@ -55,6 +55,9 @@ namespace CardPay.Services
         {
             if (!ValidateCPF(user.cpf))
                 return "CPF Inválido";
+
+            if (!ValidateEmail(user.email))
+                return "E-mail Inválido!";
 
             if (string.IsNullOrEmpty(user.user_name))
                 return "Você precisa digitar um nome válido";
@@ -107,12 +110,13 @@ namespace CardPay.Services
             return cpf.EndsWith(digito);
         }
 
-        public string ValidateIntegrity(string cpf)
+        public string ValidateExists(string cpf)
         {
-            if (cpf.Substring(cpf.Length - 1) == "9")
-                return "CPF Válido";
+            var exists = _context.users.Where(user => user.cpf == cpf).FirstOrDefault();
+            if (exists != null)
+                return "CPF já cadastrado na base";
 
-            return "CPF Inválido";
+            return "CPF Válido";
         }
 
         #region Private Methods
@@ -142,14 +146,14 @@ namespace CardPay.Services
 
             return null;
         }
-        private string ValidateEmail(string email)
+        private bool ValidateEmail(string email)
         {
             Regex regex = new Regex(@"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$");
             Match match = regex.Match(email);
             if (match.Success)
-                return null;
+                return true;
             else
-                return "Seu e-mail está incorrreto";
+                return false;
         }
         #endregion
     }
