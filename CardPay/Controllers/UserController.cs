@@ -37,6 +37,11 @@ namespace CardPay.Controllers
             if (!string.IsNullOrEmpty(validate))
                 return UnprocessableEntity(new { message = validate } );
 
+            var exists = _userService.ValidateExists(user.cpf);
+
+            if (!string.IsNullOrEmpty(exists))
+                return UnprocessableEntity(new { message = exists });
+
             _userService.CreateUser(user);
 
             return NoContent();
@@ -70,7 +75,7 @@ namespace CardPay.Controllers
 
             var message = _userService.ValidateExists(cpf);
 
-            return Ok(message);
+            return Ok(new { message = "CPF Válido!" });
         }
 
     }

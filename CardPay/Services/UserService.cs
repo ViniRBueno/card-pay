@@ -116,7 +116,7 @@ namespace CardPay.Services
             if (exists != null)
                 return "CPF já cadastrado na base";
 
-            return "CPF Válido";
+            return null;
         }
 
         #region Private Methods
