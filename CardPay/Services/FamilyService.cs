@@ -18,8 +18,6 @@ namespace CardPay.Services
             _context = new CardPayContext(contextOptions);
         }
 
-        private Family GetFamilyByUserId(int userId) => _context.families.Where(f => f.id_user == userId).FirstOrDefault();
-
         public bool CreateFamilyMember(FamilyMemberModel memberModel, int userId)
         {
             var familyId = this.GetFamilyByUserId(userId).id_family;
@@ -53,10 +51,14 @@ namespace CardPay.Services
             CreateRegister(family);
         }
 
+        #region Private Methods
+        private Family GetFamilyByUserId(int userId) => _context.families.Where(f => f.id_user == userId).FirstOrDefault();
+
         private void CreateRegister<T>(T entity) where T : class
         {
             _context.Set<T>().Add(entity);
             _context.SaveChanges();
         }
+        #endregion
     }
 }

@@ -1,6 +1,7 @@
 ﻿using CardPay.Interfaces;
 using CardPay.Models;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Threading.Tasks;
 
 namespace CardPay.Controllers
@@ -17,10 +18,12 @@ namespace CardPay.Controllers
         }
 
         [HttpPost]
-        [Route("/{id}/create-member")]
+        [Route("{id}/create-member")]
         public async Task<IActionResult> CreateMember([FromBody] FamilyMemberModel memberModel, int id)
         {
+            _familyService.CreateFamilyMember(memberModel, id);
 
+            return Ok(new { message = "Membro adicionado com sucesso" });
         }
     }
 }
