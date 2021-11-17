@@ -1,9 +1,5 @@
 ﻿using CardPay.Entities;
 using CardPay.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace CardPay.Interfaces
 {
@@ -12,8 +8,8 @@ namespace CardPay.Interfaces
         bool ValidateCPF(string cpf);
         string ValidateExists(string cpf);
         string ValidateUser(UserModel user);
-        string CreateUser(UserModel user);
+        int CreateUser(UserModel user);
         User GetUser(int id);
-        bool UpdatePassword(NewPasswordModel passwordModel, int id);
+        bool UpdateUser(UpdateUserModel userModel, int id);
     }
 }

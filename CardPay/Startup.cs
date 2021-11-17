@@ -22,7 +22,8 @@ namespace CardPay
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddTransient(typeof(IUserService), typeof(UserService));
-            
+            services.AddTransient(typeof(IFamilyService), typeof(FamilyService));
+
             services.AddControllers();
             services.AddDbContext<CardPayContext>(options =>
             {

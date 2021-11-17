@@ -19,6 +19,8 @@ namespace CardPay.Entities.Map
             builder.Property(x => x.agency).HasColumnName("agency");
 
             builder.Property(x => x.account).HasColumnName("account");
+
+            builder.Property(x => x.active).HasColumnName("active");
         }
     }
 }

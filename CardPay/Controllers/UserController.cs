@@ -1,6 +1,7 @@
 ﻿using CardPay.Interfaces;
 using CardPay.Models;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Threading.Tasks;
 
 namespace CardPay.Controllers
@@ -10,10 +11,12 @@ namespace CardPay.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
+        private readonly IFamilyService _familyService;
 
-        public UserController(IUserService userService)
+        public UserController(IUserService userService, IFamilyService familyService)
         {
             _userService = userService;
+            _familyService = familyService;
         }
 
         [HttpGet]
@@ -42,41 +45,28 @@ namespace CardPay.Controllers
             if (!string.IsNullOrEmpty(exists))
                 return UnprocessableEntity(new { message = exists });
 
-            _userService.CreateUser(user);
+            var id = _userService.CreateUser(user);
 
-            return NoContent();
+            _familyService.CreateFamily(id);
+
+            return Ok(new { message = $"Id: {id}" });
         }
 
         [HttpPut]
         [Route("update/{id}")]
-        public async Task<IActionResult> UpdatePassword([FromBody] NewPasswordModel passwordModel, [FromRoute] int id)
+        public async Task<IActionResult> UpdateUser([FromBody] UpdateUserModel userModel, [FromRoute] int id)
         {
-            var user = _userService.GetUser(id);
+            try
+            {
+                var update = _userService.UpdateUser(userModel, id);
+                _familyService.UpdateTotalSalary(id);
 
-            if (passwordModel == null)
-                return NotFound();
-
-            var update = _userService.UpdatePassword(passwordModel, id);
-
-            if (!update)
-                return BadRequest("Alguma das regras de nova senha não foi seguida, por favor, revise os dados enviados.");
-
-            return NoContent();
+                return NoContent();
+            }
+            catch(Exception ex)
+            {
+                return StatusCode(500, new { message = $"Um erro ocorreu durante a atualização dos seus dados. \n {ex.Message}" });
+            }
         }
-
-        [HttpGet]
-        [Route("cpf/{cpf}")]
-        public async Task<IActionResult> CPFValitation([FromRoute] string cpf)
-        {
-            var isValid = _userService.ValidateCPF(cpf);
-
-            if (!isValid)
-                return UnprocessableEntity("CPF Inválido!");
-
-            var message = _userService.ValidateExists(cpf);
-
-            return Ok(new { message = "CPF Válido!" });
-        }
-
     }
 }

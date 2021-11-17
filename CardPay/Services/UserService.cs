@@ -20,36 +20,46 @@ namespace CardPay.Services
             _context = new CardPayContext(contextOptions);
         }
 
-        public User GetUser(int id)
-        {
-            return _context.users.Where(x => x.id_user == id).FirstOrDefault() ?? new User();
-        }
+        public User GetUser(int id) => _context.users.Where(x => x.id_user == id).FirstOrDefault() ?? new User();
 
-        public string CreateUser(UserModel userModel)
+        public int CreateUser(UserModel userModel)
         {
-            var user = new User().Convert(userModel);
+            var user = new User(userModel);
 
             _context.users.Add(user);
             _context.SaveChanges();
 
-            return user.id_user.ToString();
+            return user.id_user;
         }
 
-        public bool UpdatePassword(NewPasswordModel passwordModel, int id)
+        public bool UpdateUser(UpdateUserModel userModel, int id)
         {
+            try
+            {
+                var user = GetUser(id);
+                user.salary = userModel.salary;
+                _context.users.Update(user);
 
-            var user = _context.users.Where(x => x.id_user == id).FirstOrDefault();
+                var account = new Account(userModel.account, id);
+                var oldAccount = _context.accounts.Where(acc => acc.id_user == id).FirstOrDefault();
 
-            var validate = ValidateUpdatePassword(passwordModel, user);
+                if (oldAccount != null)
+                {
+                    oldAccount.active = false;
+                    _context.accounts.Update(oldAccount);
+                }
 
-            if (!validate)
-                return false;
+                _context.accounts.Add(account);
+                _context.SaveChanges();
 
-            user.password = passwordModel.newPassword;
-            _context.SaveChanges();
-
-            return true;
+                return true;
+            }
+            catch
+            {
+                throw;
+            }
         }
+
 
         public string ValidateUser(UserModel user)
         {
@@ -112,27 +122,13 @@ namespace CardPay.Services
 
         public string ValidateExists(string cpf)
         {
-            var exists = _context.users.Where(user => user.cpf == cpf).FirstOrDefault();
-            if (exists != null)
+            if (_context.users.Where(user => user.cpf == cpf).FirstOrDefault() != null)
                 return "CPF já cadastrado na base";
 
             return null;
         }
 
         #region Private Methods
-        private bool ValidateUpdatePassword(NewPasswordModel passwordModel, User user)
-        {
-            if (passwordModel.oldPassword != user.password)
-                return false;
-
-            if (ValidatePassword(passwordModel.newPassword) != null)
-                return false;
-
-            if (passwordModel.newPassword != passwordModel.confirmNewPassword)
-                return false;
-
-            return true;
-        }
         private string ValidatePassword(string password)
         {
             var regex = new Regex(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,15}$");

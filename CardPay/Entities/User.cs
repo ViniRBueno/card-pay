@@ -15,18 +15,14 @@ namespace CardPay.Entities
         public DateTime birth_date { get; set; }
         public decimal salary { get; set; }
 
-        public User Convert(UserModel userModel)
+        public User(UserModel userModel)
         {
-            var user = new User();
-
-            user.email = userModel.email;
-            user.password = userModel.password;
-            user.user_name = userModel.user_name;
-            user.cpf = userModel.cpf;
-            user.birth_date = userModel.birth_date;
-            user.salary = userModel.salary;
-
-            return user;
+            email = userModel.email;
+            password = userModel.password;
+            user_name = userModel.user_name;
+            cpf = userModel.cpf;
+            birth_date = userModel.birth_date;
+            salary = 0.00M;
         }
         public User() { }
     }
