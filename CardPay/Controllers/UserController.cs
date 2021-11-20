@@ -49,7 +49,7 @@ namespace CardPay.Controllers
 
             _familyService.CreateFamily(id);
 
-            return Ok(new { message = $"Id: {id}" });
+            return Ok(new BaseDTO<int>(true, "Usuário criado com sucesso", id));
         }
 
         [HttpPut]
