@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace CardPay.Controllers
 {
-    [Route("/v1/[controller]")]
+    [Route("/[controller]")]
     [ApiController]
     public class LoanController : ControllerBase
     {

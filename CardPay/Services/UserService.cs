@@ -2,7 +2,6 @@
 using CardPay.Interfaces;
 using CardPay.Models;
 using Microsoft.EntityFrameworkCore;
-using System.Configuration;
 using System.Linq;
 using System.Text.RegularExpressions;
 
@@ -41,11 +40,11 @@ namespace CardPay.Services
                 _context.users.Update(user);
 
                 var account = new Account(additionalData.account, id);
-                var oldAccount = _context.accounts.Where(acc => acc.id_user == id).FirstOrDefault();
+                var oldAccount = _context.accounts.Where(acc => acc.id_user == id && acc._active == 0).FirstOrDefault();
 
                 if (oldAccount != null)
                 {
-                    oldAccount.active = false;
+                    oldAccount._active = 0;
                     _context.accounts.Update(oldAccount);
                 }
 

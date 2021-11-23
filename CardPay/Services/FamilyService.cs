@@ -48,7 +48,7 @@ namespace CardPay.Services
 
             family.total_salary = totalSalary;
 
-            CreateRegister(family);
+            UpdateRegister(family);
         }
 
         #region Private Methods
@@ -57,6 +57,12 @@ namespace CardPay.Services
         private void CreateRegister<T>(T entity) where T : class
         {
             _context.Set<T>().Add(entity);
+            _context.SaveChanges();
+        }
+
+        private void UpdateRegister<T>(T entity) where T : class
+        {
+            _context.Set<T>().Update(entity);
             _context.SaveChanges();
         }
         #endregion
