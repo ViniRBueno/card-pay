@@ -26,6 +26,7 @@ namespace CardPay
             services.AddTransient(typeof(ILoanService), typeof(LoanService));
 
             services.AddControllers();
+            services.AddSwaggerGen();
             services.AddDbContext<CardPayContext>(options =>
             {
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"), provideroptions => provideroptions.CommandTimeout(60));
@@ -48,6 +49,8 @@ namespace CardPay
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                app.UseSwagger();
+                app.UseSwaggerUI();
             });
         }
     }
