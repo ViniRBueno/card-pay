@@ -20,7 +20,7 @@ namespace CardPay.Services
             _context = new CardPayContext(contextOptions);
         }
 
-        public User GetUser(int id) => _context.users.Where(x => x.id_user == id).FirstOrDefault() ?? new User();
+        public User GetUser(int id) => _context.users.Where(x => x.id_user == id).FirstOrDefault();
 
         public int CreateUser(UserModel userModel)
         {
@@ -32,15 +32,15 @@ namespace CardPay.Services
             return user.id_user;
         }
 
-        public bool UpdateUser(UpdateUserModel userModel, int id)
+        public bool UpdateAdditionalData(UpdateAdditionalData additionalData, int id)
         {
             try
             {
                 var user = GetUser(id);
-                user.salary = userModel.salary;
+                user.salary = additionalData.salary;
                 _context.users.Update(user);
 
-                var account = new Account(userModel.account, id);
+                var account = new Account(additionalData.account, id);
                 var oldAccount = _context.accounts.Where(acc => acc.id_user == id).FirstOrDefault();
 
                 if (oldAccount != null)
@@ -60,7 +60,6 @@ namespace CardPay.Services
             }
         }
 
-
         public string ValidateUser(UserModel user)
         {
             if (!ValidateCPF(user.cpf))
@@ -68,6 +67,9 @@ namespace CardPay.Services
 
             if (!ValidateEmail(user.email))
                 return "E-mail Inválido!";
+
+            if (!ValidatePassword(user.password))
+                return "Senha inválida";
 
             if (string.IsNullOrEmpty(user.user_name))
                 return "Você precisa digitar um nome válido";
@@ -80,11 +82,40 @@ namespace CardPay.Services
 
             if (user.email.Length < 11)
                 return "Seu login deve ter menos de 11 caracteres";
-
-            return ValidatePassword(user.password);
+            
+            return null;
         }
 
-        public bool ValidateCPF(string cpf)
+        public string ValidateExists(string cpf)
+        {
+            if (_context.users.Where(user => user.cpf == cpf).FirstOrDefault() != null)
+                return "CPF já cadastrado na base";
+
+            return null;
+        }
+
+        #region Private Methods
+        private bool ValidatePassword(string password)
+        {
+            var regex = new Regex(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,15}$");
+            var isValidated = regex.IsMatch(password);
+
+            if (string.IsNullOrEmpty(password) || !isValidated)
+                return false;
+
+            return true;
+        }
+        private bool ValidateEmail(string email)
+        {
+            Regex regex = new Regex(@"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$");
+            Match match = regex.Match(email);
+            if (match.Success)
+                return true;
+            else
+                return false;
+        }
+
+        private bool ValidateCPF(string cpf)
         {
             int[] multiplicador1 = new int[9] { 10, 9, 8, 7, 6, 5, 4, 3, 2 };
             int[] multiplicador2 = new int[10] { 11, 10, 9, 8, 7, 6, 5, 4, 3, 2 };
@@ -118,38 +149,6 @@ namespace CardPay.Services
                 resto = 11 - resto;
             digito = digito + resto.ToString();
             return cpf.EndsWith(digito);
-        }
-
-        public string ValidateExists(string cpf)
-        {
-            if (_context.users.Where(user => user.cpf == cpf).FirstOrDefault() != null)
-                return "CPF já cadastrado na base";
-
-            return null;
-        }
-
-        #region Private Methods
-        private string ValidatePassword(string password)
-        {
-            var regex = new Regex(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,15}$");
-            var isValidated = regex.IsMatch(password);
-
-            if (string.IsNullOrEmpty(password))
-                return "Senha inválida";
-
-            if (!isValidated)
-                return "Sua senha deve ter ao menos 8 caracteres, conter ao menos uma letra e um número.";
-
-            return null;
-        }
-        private bool ValidateEmail(string email)
-        {
-            Regex regex = new Regex(@"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$");
-            Match match = regex.Match(email);
-            if (match.Success)
-                return true;
-            else
-                return false;
         }
         #endregion
     }

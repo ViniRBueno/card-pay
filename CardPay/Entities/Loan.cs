@@ -10,6 +10,7 @@ namespace CardPay.Entities
         public int total_parcels { get; set; }
         public int id_loanstatus { get; set; }
 
+        public Loan() { }
         public Loan(CreateLoanModel loanModel)
         {
             id_family = loanModel.id_family;

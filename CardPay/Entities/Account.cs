@@ -4,6 +4,7 @@ namespace CardPay.Entities
 {
     public partial class Account
     {
+        public Account() { }
         public Account(AccountModel accountModel, int UserId)
         {
             id_user = UserId;

@@ -9,7 +9,7 @@ namespace CardPay.Entities
         public string cpf { get; set; }
         public string member_name { get; set; }
         public decimal salary { get; set; }
-
+        public FamilyMember() { }
         public FamilyMember(FamilyMemberModel memberModel, int familyId)
         {
             id_family = familyId;

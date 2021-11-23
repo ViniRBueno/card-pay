@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace CardPay.Models
 {
-    public class UpdateUserModel
+    public class UpdateAdditionalData
     {
         public decimal salary { get; set; }
         public AccountModel account { get; set; }

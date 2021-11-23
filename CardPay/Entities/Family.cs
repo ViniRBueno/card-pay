@@ -6,6 +6,7 @@
         public int id_user { get; set; }
         public decimal total_salary { get; set; }
 
+        public Family () { }
         public Family (int id)
         {
             id_user = id;

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CardPay.Controllers
 {
-    [Route("/v1/[controller]")]
+    [Route("/[controller]")]
     [ApiController]
     public class UserController : ControllerBase
     {
@@ -26,9 +26,9 @@ namespace CardPay.Controllers
             var user = _userService.GetUser(id);
 
             if (user == null)
-                return NotFound();
+                return Ok(BaseDTO<string>.Error("Usuário não encontrado"));
 
-            return Ok(user);
+            return Ok(BaseDTO<Entities.User>.Success("Usuário Encontrado", user));
         }
 
         [HttpPost]
@@ -38,27 +38,27 @@ namespace CardPay.Controllers
             var validate = _userService.ValidateUser(user);
 
             if (!string.IsNullOrEmpty(validate))
-                return UnprocessableEntity(new { message = validate } );
+                return Ok(BaseDTO<string>.Error(validate));
 
             var exists = _userService.ValidateExists(user.cpf);
 
             if (!string.IsNullOrEmpty(exists))
-                return UnprocessableEntity(new { message = exists });
+                return Ok(BaseDTO<string>.Error(exists));
 
             var id = _userService.CreateUser(user);
 
             _familyService.CreateFamily(id);
 
-            return Ok(new BaseDTO<int>(true, "Usuário criado com sucesso", id));
+            return Ok(BaseDTO<int>.Success("Usuário criado com sucesso", id));
         }
 
         [HttpPut]
-        [Route("update/{id}")]
-        public async Task<IActionResult> UpdateUser([FromBody] UpdateUserModel userModel, [FromRoute] int id)
+        [Route("{id}/update")]
+        public async Task<IActionResult> UpdateUser([FromBody] UpdateAdditionalData userModel, [FromRoute] int id)
         {
             try
             {
-                var update = _userService.UpdateUser(userModel, id);
+                var update = _userService.UpdateAdditionalData(userModel, id);
                 _familyService.UpdateTotalSalary(id);
 
                 return NoContent();
@@ -66,6 +66,23 @@ namespace CardPay.Controllers
             catch(Exception ex)
             {
                 return StatusCode(500, new { message = $"Um erro ocorreu durante a atualização dos seus dados. \n {ex.Message}" });
+            }
+        }
+
+        [HttpPatch]
+        [Route("{id}/update-additional-data")]
+        public async Task<IActionResult> UpdateAdditionalData([FromBody] UpdateAdditionalData additionalData, [FromRoute] int id)
+        {
+            try
+            {
+                var update = _userService.UpdateAdditionalData(additionalData, id);
+                _familyService.UpdateTotalSalary(id);
+
+                return Ok(BaseDTO<string>.Success("Dados adicionados com sucesso!", null));
+            }
+            catch (Exception ex)
+            {
+                return Ok(BaseDTO<string>.Error($"Um erro ocorreu durante a atualização dos seus dados. \n {ex.Message}"));
             }
         }
     }
