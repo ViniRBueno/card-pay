@@ -13,7 +13,7 @@ namespace CardPay.Services
         public UserService()
         {
             var contextOptions = new DbContextOptionsBuilder<CardPayContext>()
-                .UseSqlServer(@"Server=localhost;Database=DB_CARD_PAY;Integrated Security=True")
+                .UseSqlServer(@"Server=DESKTOP-GTMOM1F\SQLEXPRESS;Database=DB_CARD_PAY;Integrated Security=True;")
                 .Options;
 
             _context = new CardPayContext(contextOptions);

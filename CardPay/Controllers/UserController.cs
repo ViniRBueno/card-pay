@@ -1,5 +1,9 @@
-﻿using CardPay.Interfaces;
+﻿using CardPay.Entities;
+using CardPay.Interfaces;
+using CardPay.Jwt;
 using CardPay.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
@@ -29,6 +33,32 @@ namespace CardPay.Controllers
                 return Ok(BaseDTO<string>.Error("Usuário não encontrado"));
 
             return Ok(BaseDTO<Entities.User>.Success("Usuário Encontrado", user));
+        }
+
+        [HttpGet]
+        [Route("token")]
+        public async Task<IActionResult> Token()
+        {
+            User user = new User();
+            user.email = "administrador@sistema.com";
+            user.id_user = 1;
+            var token = TokenManager.GenerateToken(user, 10);
+            var cookieOptions = new CookieOptions()
+            {
+                Expires = DateTime.Now.AddMinutes(1),
+                IsEssential = true
+            };
+            Response.Cookies.Append("access-token", token, cookieOptions);
+            return Ok(BaseDTO<string>.Success("Usuário criado com sucesso", token));
+        }
+
+        [HttpGet]
+        [Authorize]
+        [Route("protected")]
+        public async Task<IActionResult> Protected()
+        {
+            var user = TokenManager.GetUser(User.Identity.Name);
+            return Ok("Olá " + user.user_name);
         }
 
         [HttpPost]
