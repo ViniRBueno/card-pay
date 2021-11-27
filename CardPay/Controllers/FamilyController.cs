@@ -1,12 +1,15 @@
-﻿using CardPay.Interfaces;
+﻿using CardPay.Entities;
+using CardPay.Interfaces;
+using CardPay.Jwt;
 using CardPay.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace CardPay.Controllers
 {
-    [Route("/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class FamilyController : ControllerBase
     {
@@ -17,13 +20,24 @@ namespace CardPay.Controllers
             _familyService = familyService;
         }
 
-        [HttpPost]
-        [Route("{id}/create-member")]
-        public async Task<IActionResult> CreateMember([FromBody] FamilyMemberModel memberModel, int id)
+        [HttpGet]
+        [Authorize]
+        [Route("")]
+        public async Task<IActionResult> GetFamilyMembers()
         {
-            _familyService.CreateFamilyMember(memberModel, id);
+            var userToken = TokenManager.GetUser(User.Identity.Name);
+            var members = _familyService.GetFamilyMembers(userToken.id);
+            return Ok(BaseDTO<IEnumerable<FamilyMember>>.Success("Família encontrada com sucesso!", members));
+        }
 
-            return Ok(new { message = "Membro adicionado com sucesso" });
+        [HttpPost]
+        [Authorize]
+        [Route("create-member")]
+        public async Task<IActionResult> AddMember([FromBody] FamilyMemberModel memberModel)
+        {
+            var userToken = TokenManager.GetUser(User.Identity.Name);
+            var familyMember = _familyService.CreateFamilyMember(memberModel, userToken.id);
+            return Ok(BaseDTO<FamilyMember>.Success("Memebro criado com sucesso", familyMember));
         }
     }
 }

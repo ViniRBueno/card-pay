@@ -2,6 +2,7 @@
 using CardPay.Interfaces;
 using CardPay.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace CardPay.Services
@@ -18,14 +19,21 @@ namespace CardPay.Services
             _context = new CardPayContext(contextOptions);
         }
 
-        public bool CreateFamilyMember(FamilyMemberModel memberModel, int userId)
+        public IEnumerable<FamilyMember> GetFamilyMembers(int userId)
         {
-            var familyId = this.GetFamilyByUserId(userId).id_family;
+            var familyId = GetFamilyByUserId(userId).id_family;
+            return _context.familyMembers.Where(f => f.id_family == familyId).ToList();
+        }
+
+        public FamilyMember CreateFamilyMember(FamilyMemberModel memberModel, int userId)
+        {
+            var familyId = GetFamilyByUserId(userId).id_family;
             var familyMember = new FamilyMember(memberModel, familyId);
 
             CreateRegister(familyMember);
+            this.UpdateTotalSalary(userId);
 
-            return true;
+            return familyMember;
         }
 
         public void CreateFamily(int userId)
@@ -36,10 +44,10 @@ namespace CardPay.Services
 
         public void UpdateTotalSalary(int userId)
         {
-            var userSalary = _context.users.Where(u => u.id_user == userId).FirstOrDefault().salary;
+            var userSalary = _context.users.Where(u => u.id_user == userId).FirstOrDefault();
             var family = GetFamilyByUserId(userId);
             var familyMembers = _context.familyMembers.Where(fm => fm.id_family == family.id_family).ToList();
-            decimal totalSalary = userSalary;
+            decimal totalSalary = userSalary.salary;
 
             foreach (var member in familyMembers)
             {

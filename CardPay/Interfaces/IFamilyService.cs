@@ -1,4 +1,5 @@
-﻿using CardPay.Models;
+﻿using CardPay.Entities;
+using CardPay.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,7 @@ namespace CardPay.Interfaces
     {
         void CreateFamily(int id);
         void UpdateTotalSalary(int userId);
-        bool CreateFamilyMember(FamilyMemberModel memberModel, int userId);
+        FamilyMember CreateFamilyMember(FamilyMemberModel memberModel, int userId);
+        IEnumerable<FamilyMember> GetFamilyMembers(int userId);
     }
 }

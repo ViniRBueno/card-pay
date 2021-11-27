@@ -10,5 +10,6 @@ namespace CardPay.Interfaces
         int CreateUser(UserModel user);
         User GetUser(int id);
         bool UpdateAdditionalData(UpdateAdditionalData userModel, int id);
+        User ValidateLogin(LoginModel loginModel);
     }
 }

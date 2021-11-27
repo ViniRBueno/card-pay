@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace CardPay.Controllers
 {
-    [Route("/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class UserController : ControllerBase
     {
@@ -21,18 +21,6 @@ namespace CardPay.Controllers
         {
             _userService = userService;
             _familyService = familyService;
-        }
-
-        [HttpGet]
-        [Route("{id}")]
-        public async Task<IActionResult> GetUser([FromRoute] int id)
-        {
-            var user = _userService.GetUser(id);
-
-            if (user == null)
-                return Ok(BaseDTO<string>.Error("Usuário não encontrado"));
-
-            return Ok(BaseDTO<Entities.User>.Success("Usuário Encontrado", user));
         }
 
         [HttpGet]
@@ -50,6 +38,29 @@ namespace CardPay.Controllers
             };
             Response.Cookies.Append("access-token", token, cookieOptions);
             return Ok(BaseDTO<string>.Success("Usuário criado com sucesso", token));
+        }
+
+        [HttpPost]
+        [Route("login")]
+        public async Task<IActionResult> Login([FromBody] LoginModel loginModel)
+        {
+            try
+            {
+                var user = _userService.ValidateLogin(loginModel);
+                var token = TokenManager.GenerateToken(user, 10);
+                var cookieOptions = new CookieOptions()
+                {
+                    Expires = DateTime.Now.AddMinutes(30),
+                    IsEssential = true
+                };
+                Response.Cookies.Append("access-token", token, cookieOptions);
+                return Ok(BaseDTO<string>.Success("Login feito com sucesso!", token));
+
+            }
+            catch (Exception ex)
+            {
+                return Ok(BaseDTO<string>.Error(ex.Message));
+            }
         }
 
         [HttpGet]
@@ -83,13 +94,15 @@ namespace CardPay.Controllers
         }
 
         [HttpPut]
-        [Route("{id}/update")]
-        public async Task<IActionResult> UpdateUser([FromBody] UpdateAdditionalData userModel, [FromRoute] int id)
+        [Authorize]
+        [Route("update")]
+        public async Task<IActionResult> UpdateUser([FromBody] UpdateAdditionalData userModel)
         {
             try
             {
-                var update = _userService.UpdateAdditionalData(userModel, id);
-                _familyService.UpdateTotalSalary(id);
+                var userToken = TokenManager.GetUser(User.Identity.Name);
+                var update = _userService.UpdateAdditionalData(userModel, userToken.id);
+                _familyService.UpdateTotalSalary(userToken.id);
 
                 return NoContent();
             }
@@ -100,13 +113,15 @@ namespace CardPay.Controllers
         }
 
         [HttpPatch]
-        [Route("{id}/update-additional-data")]
-        public async Task<IActionResult> UpdateAdditionalData([FromBody] UpdateAdditionalData additionalData, [FromRoute] int id)
+        [Authorize]
+        [Route("update-additional-data")]
+        public async Task<IActionResult> UpdateAdditionalData([FromBody] UpdateAdditionalData additionalData)
         {
             try
             {
-                var update = _userService.UpdateAdditionalData(additionalData, id);
-                _familyService.UpdateTotalSalary(id);
+                var userToken = TokenManager.GetUser(User.Identity.Name);
+                var update = _userService.UpdateAdditionalData(additionalData, userToken.id);
+                _familyService.UpdateTotalSalary(userToken.id);
 
                 return Ok(BaseDTO<string>.Success("Dados adicionados com sucesso!", null));
             }
@@ -114,6 +129,21 @@ namespace CardPay.Controllers
             {
                 return Ok(BaseDTO<string>.Error($"Um erro ocorreu durante a atualização dos seus dados. \n {ex.Message}"));
             }
+        }
+
+
+        [HttpGet]
+        [Authorize]
+        [Route("")]
+        public async Task<IActionResult> GetUser()
+        {
+            var userToken = TokenManager.GetUser(User.Identity.Name);
+            var user = _userService.GetUser(userToken.id);
+
+            if (user == null)
+                return Ok(BaseDTO<string>.Error("Usuário não encontrado"));
+
+            return Ok(BaseDTO<User>.Success("Usuário Encontrado", user));
         }
     }
 }

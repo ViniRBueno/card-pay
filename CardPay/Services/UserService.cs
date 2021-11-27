@@ -9,6 +9,7 @@ namespace CardPay.Services
 {
     public class UserService : IUserService
     {
+        const string loginErr = "Login ou senha inválidos";
         CardPayContext _context;
         public UserService()
         {
@@ -59,6 +60,21 @@ namespace CardPay.Services
             }
         }
 
+        public User ValidateLogin(LoginModel loginModel)
+        {
+            if (ValidateLoginData(loginModel))
+                throw new System.Exception(loginErr);
+
+            var user = GetUserByLogin(loginModel.login);
+            if (user == null)
+                throw new System.Exception(loginErr);
+
+            if (user.password != loginModel.password)
+                throw new System.Exception(loginErr);
+
+            return user;
+        }
+
         public string ValidateUser(UserModel user)
         {
             if (!ValidateCPF(user.cpf))
@@ -81,10 +97,10 @@ namespace CardPay.Services
 
             if (user.email.Length < 11)
                 return "Seu login deve ter menos de 11 caracteres";
-            
+
             return null;
         }
-
+        
         public string ValidateExists(string cpf)
         {
             if (_context.users.Where(user => user.cpf == cpf).FirstOrDefault() != null)
@@ -149,6 +165,10 @@ namespace CardPay.Services
             digito = digito + resto.ToString();
             return cpf.EndsWith(digito);
         }
+
+        private bool ValidateLoginData(LoginModel login) => string.IsNullOrEmpty(login.login) || string.IsNullOrEmpty(login.password) ? true : false;
+
+        private User GetUserByLogin(string login) => _context.users.Where(u => u.email == login).FirstOrDefault();
         #endregion
     }
 }
