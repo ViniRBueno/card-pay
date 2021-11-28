@@ -21,6 +21,8 @@ namespace CardPay.Entities.Map
             builder.Property(x => x.parcel_number).HasColumnName("parcel_number");
 
             builder.Property(x => x.ticket_number).HasColumnName("ticket_number");
+
+            builder.Property(x => x.expire_date).HasColumnName("expire_date");
         }
     }
 }

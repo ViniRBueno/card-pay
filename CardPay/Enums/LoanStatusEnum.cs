@@ -7,16 +7,13 @@ namespace CardPay.Enums
         [Description("Empréstimo Criado")]
         Created = 1,
         
-        [Description("Empréstimo Aprovado pelo operador")]
-        Approved = 2,
-
         [Description("Empréstimo ativo para o cliente e sendo pagos")]
-        Active = 3,
+        Active = 2,
 
         [Description("Empréstimo rejeitado pelo operador")]
-        Rejected = 4,
+        Rejected = 3,
 
         [Description("Empréstimo já finalizado")]
-        Inactive = 5
+        Inactive = 4
     }
 }

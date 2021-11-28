@@ -4,6 +4,7 @@ using CardPay.Jwt;
 using CardPay.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -22,7 +23,6 @@ namespace CardPay.Controllers
 
         [HttpGet]
         [Authorize]
-        [Route("")]
         public async Task<IActionResult> GetFamilyMembers()
         {
             var userToken = TokenManager.GetUser(User.Identity.Name);
@@ -32,12 +32,28 @@ namespace CardPay.Controllers
 
         [HttpPost]
         [Authorize]
-        [Route("create-member")]
         public async Task<IActionResult> AddMember([FromBody] FamilyMemberModel memberModel)
         {
             var userToken = TokenManager.GetUser(User.Identity.Name);
             var familyMember = _familyService.CreateFamilyMember(memberModel, userToken.id);
             return Ok(BaseDTO<FamilyMember>.Success("Memebro criado com sucesso", familyMember));
+        }
+
+        [HttpPatch]
+        [Authorize]
+        [Route("{id}")]
+        public async Task<IActionResult> UpdateMember([FromBody] FamilyMemberModel memberModel, int id)
+        {
+            try
+            {
+                var userToken = TokenManager.GetUser(User.Identity.Name);
+                var familyMember = _familyService.UpdateFamilyMember(memberModel, userToken.id, id);
+                return Ok(BaseDTO<FamilyMember>.Success("Memebro atualizado com sucesso", familyMember));
+            }
+            catch (Exception ex)
+            {
+                return Ok(BaseDTO<string>.Error(ex.Message));
+            }
         }
     }
 }

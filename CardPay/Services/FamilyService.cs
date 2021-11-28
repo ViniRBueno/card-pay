@@ -21,8 +21,23 @@ namespace CardPay.Services
 
         public IEnumerable<FamilyMember> GetFamilyMembers(int userId)
         {
+            var family = new List<FamilyMember>();
+            var user = GetUser(userId);
+            family.Add(new FamilyMember()
+            {
+                cpf = user.cpf,
+                member_name = user.user_name,
+                salary = user.salary
+            });
+            
             var familyId = GetFamilyByUserId(userId).id_family;
-            return _context.familyMembers.Where(f => f.id_family == familyId).ToList();
+            var members = _context.familyMembers.Where(f => f.id_family == familyId).ToList();
+
+            foreach (var member in members)
+            {
+                family.Add(member);
+            }
+            return family;
         }
 
         public FamilyMember CreateFamilyMember(FamilyMemberModel memberModel, int userId)
@@ -31,9 +46,28 @@ namespace CardPay.Services
             var familyMember = new FamilyMember(memberModel, familyId);
 
             CreateRegister(familyMember);
-            this.UpdateTotalSalary(userId);
+            UpdateTotalSalary(userId);
 
             return familyMember;
+        }
+
+        public FamilyMember UpdateFamilyMember(FamilyMemberModel memberModel, int userId, int memberId)
+        {
+            var familyId = GetFamilyByUserId(userId).id_family;
+            var members = GetFamilyMembersByFamilyId(familyId);
+            var updateMember = members.Where(m => m.id_member == memberId).FirstOrDefault();
+
+            if (updateMember == null)
+                throw new System.Exception("Membro não encontrado na família!");
+
+            updateMember.cpf = memberModel.cpf;
+            updateMember.member_name = memberModel.member_name;
+            updateMember.salary = memberModel.salary;
+
+            UpdateRegister(updateMember);
+            UpdateTotalSalary(userId);
+
+            return updateMember;
         }
 
         public void CreateFamily(int userId)
@@ -44,10 +78,10 @@ namespace CardPay.Services
 
         public void UpdateTotalSalary(int userId)
         {
-            var userSalary = _context.users.Where(u => u.id_user == userId).FirstOrDefault();
+            var user = GetUser(userId);
             var family = GetFamilyByUserId(userId);
-            var familyMembers = _context.familyMembers.Where(fm => fm.id_family == family.id_family).ToList();
-            decimal totalSalary = userSalary.salary;
+            var familyMembers = GetFamilyMembersByFamilyId(family.id_family);
+            decimal totalSalary = user.salary;
 
             foreach (var member in familyMembers)
             {
@@ -61,6 +95,10 @@ namespace CardPay.Services
 
         #region Private Methods
         private Family GetFamilyByUserId(int userId) => _context.families.Where(f => f.id_user == userId).FirstOrDefault();
+
+        private User GetUser(int userId) => _context.users.Where(u => u.id_user == userId).FirstOrDefault();
+
+        private IEnumerable<FamilyMember> GetFamilyMembersByFamilyId(int familyId) => _context.familyMembers.Where(m => m.id_family == familyId).ToList();
 
         private void CreateRegister<T>(T entity) where T : class
         {

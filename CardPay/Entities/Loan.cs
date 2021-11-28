@@ -1,4 +1,5 @@
 ﻿using CardPay.Models;
+using System;
 
 namespace CardPay.Entities
 {
@@ -9,6 +10,10 @@ namespace CardPay.Entities
         public decimal loan_value { get; set; }
         public int total_parcels { get; set; }
         public int id_loanstatus { get; set; }
+        public string reason { get; set; }
+        public DateTime create_date { get; set; }
+        public decimal parcel_value { get; set; }
+        public int parcel_amount { get; set; }
 
         public Loan() { }
         public Loan(CreateLoanModel loanModel)

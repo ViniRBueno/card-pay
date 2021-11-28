@@ -25,7 +25,6 @@ namespace CardPay.Services
             foreach (var loan in loans)
             {
                 if (loan.id_loanstatus == (int)LoanStatusEnum.Active
-                    || loan.id_loanstatus == (int)LoanStatusEnum.Approved
                     || loan.id_loanstatus == (int)LoanStatusEnum.Created)
                     return new LoanResultModel() { error = "Só pode haver um empréstimo ativo por cadastro" };
             }

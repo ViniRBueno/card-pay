@@ -19,6 +19,14 @@ namespace CardPay.Entities.Map
             builder.Property(x => x.total_parcels).HasColumnName("total_parcels");
 
             builder.Property(x => x.id_loanstatus).HasColumnName("id_loanstatus");
+
+            builder.Property(x => x.reason).HasColumnName("reason");
+
+            builder.Property(x => x.create_date).HasColumnName("create_date");
+
+            builder.Property(x => x.parcel_value).HasColumnName("parcel_value");
+
+            builder.Property(x => x.parcel_amount).HasColumnName("parcel_amount");
         }
     }
 }

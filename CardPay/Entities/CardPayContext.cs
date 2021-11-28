@@ -20,6 +20,7 @@ namespace CardPay.Entities
         public DbSet<Loan> loans { get; set; }
         public DbSet<LoanStatus> loanstatuses { get; set; }
         public DbSet<Parcel> parcels { get; set; }
+        public DbSet<Admin> admins { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -33,6 +34,7 @@ namespace CardPay.Entities
             modelBuilder.Entity<Loan>(new Map.LoanMap().Configure);
             modelBuilder.Entity<LoanStatus>(new Map.LoanStatusMap().Configure);
             modelBuilder.Entity<Parcel>(new Map.ParcelMap().Configure);
+            modelBuilder.Entity<Admin>(new Map.AdminMap().Configure);
         }
     }
 }
