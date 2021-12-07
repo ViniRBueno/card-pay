@@ -39,15 +39,15 @@ namespace CardPay.Controllers
             return Ok(BaseDTO<FamilyMember>.Success("Memebro criado com sucesso", familyMember));
         }
 
-        [HttpPatch]
+        [HttpPut]
         [Authorize]
         [Route("{id}")]
-        public async Task<IActionResult> UpdateMember([FromBody] FamilyMemberModel memberModel, int id)
+        public async Task<IActionResult> UpdateMember([FromBody] FamilyMemberModel memberModel)
         {
             try
             {
                 var userToken = TokenManager.GetUser(User.Identity.Name);
-                var familyMember = _familyService.UpdateFamilyMember(memberModel, userToken.id, id);
+                var familyMember = _familyService.UpdateFamilyMember(memberModel, userToken.id);
                 return Ok(BaseDTO<FamilyMember>.Success("Memebro atualizado com sucesso", familyMember));
             }
             catch (Exception ex)

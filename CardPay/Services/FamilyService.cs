@@ -51,11 +51,11 @@ namespace CardPay.Services
             return familyMember;
         }
 
-        public FamilyMember UpdateFamilyMember(FamilyMemberModel memberModel, int userId, int memberId)
+        public FamilyMember UpdateFamilyMember(FamilyMemberModel memberModel, int userId)
         {
             var familyId = GetFamilyByUserId(userId).id_family;
             var members = GetFamilyMembersByFamilyId(familyId);
-            var updateMember = members.Where(m => m.id_member == memberId).FirstOrDefault();
+            var updateMember = members.Where(m => m.id_member == memberModel.id).FirstOrDefault();
 
             if (updateMember == null)
                 throw new System.Exception("Membro não encontrado na família!");

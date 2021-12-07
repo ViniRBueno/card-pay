@@ -13,6 +13,6 @@ namespace CardPay.Interfaces
         void UpdateTotalSalary(int userId);
         FamilyMember CreateFamilyMember(FamilyMemberModel memberModel, int userId);
         IEnumerable<FamilyMember> GetFamilyMembers(int userId);
-        FamilyMember UpdateFamilyMember(FamilyMemberModel memberModel, int userId, int memberId);
+        FamilyMember UpdateFamilyMember(FamilyMemberModel memberModel, int userId);
     }
 }

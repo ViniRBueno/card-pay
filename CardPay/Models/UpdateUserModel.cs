@@ -1,8 +1,12 @@
-﻿namespace CardPay.Models
+﻿using System;
+
+namespace CardPay.Models
 {
-    public class UpdateAdditionalData
+    public class UpdateUserModel
     {
-        public decimal salary { get; set; }
-        public AccountModel account { get; set; }
+        public string user_name { get; set; }
+        public string cpf { get; set; }
+        public string email { get; set; }
+        public DateTime birth_date { get; set; }
     }
 }

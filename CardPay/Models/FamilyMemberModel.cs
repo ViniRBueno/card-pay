@@ -7,6 +7,7 @@ namespace CardPay.Models
 {
     public class FamilyMemberModel
     {
+        public int id { get; set; }
         public string cpf { get; set; }
         public string member_name { get; set; }
         public decimal salary { get; set; }

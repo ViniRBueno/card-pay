@@ -29,11 +29,11 @@ namespace CardPay.Controllers
         {
             User user = new User();
             user.email = "administrador@sistema.com";
-            user.id_user = 1;
+            user.id_user = 5;
             var token = TokenManager.GenerateToken(user, 10);
             var cookieOptions = new CookieOptions()
             {
-                Expires = DateTime.Now.AddMinutes(1),
+                Expires = DateTime.Now.AddMinutes(20),
                 IsEssential = true
             };
             Response.Cookies.Append("access-token", token, cookieOptions);
@@ -72,8 +72,22 @@ namespace CardPay.Controllers
             return Ok("Olá " + user.user_name);
         }
 
+        [HttpGet]
+        [Authorize]
+        [Route("")]
+        public async Task<IActionResult> GetUser()
+        {
+            var userToken = TokenManager.GetUser(User.Identity.Name);
+            var user = _userService.GetUser(userToken.id);
+
+            if (user == null)
+                return Ok(BaseDTO<string>.Error("Usuário não encontrado"));
+
+            return Ok(BaseDTO<User>.Success("Usuário Encontrado", user));
+        }
+
         [HttpPost]
-        [Route("create")]
+        [Route("")]
         public async Task<IActionResult> CreateUser([FromBody] UserModel user)
         {
             var validate = _userService.ValidateUser(user);
@@ -95,27 +109,30 @@ namespace CardPay.Controllers
 
         [HttpPut]
         [Authorize]
-        [Route("update")]
-        public async Task<IActionResult> UpdateUser([FromBody] UpdateAdditionalData userModel)
+        [Route("")]
+        public async Task<IActionResult> UpdateUser([FromBody] UpdateUserModel userModel)
         {
             try
             {
                 var userToken = TokenManager.GetUser(User.Identity.Name);
-                var update = _userService.UpdateAdditionalData(userModel, userToken.id);
-                _familyService.UpdateTotalSalary(userToken.id);
+                var validate = _userService.ValidateUser(userModel);
+                if (!string.IsNullOrEmpty(validate))
+                    return Ok(BaseDTO<string>.Error(validate));
 
-                return NoContent();
+                var update = _userService.UpdateUser(userModel, userToken.id);
+
+                return Ok(BaseDTO<int>.Success("Usuário atualizado com sucesso", userToken.id));
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                return StatusCode(500, new { message = $"Um erro ocorreu durante a atualização dos seus dados. \n {ex.Message}" });
+                return Ok(BaseDTO<string>.Error($"Um erro ocorreu durante a atualização dos seus dados. \n {ex.Message}"));
             }
         }
 
         [HttpPatch]
         [Authorize]
-        [Route("update-additional-data")]
-        public async Task<IActionResult> UpdateAdditionalData([FromBody] UpdateAdditionalData additionalData)
+        [Route("additional-data")]
+        public async Task<IActionResult> UpdateAdditionalData([FromBody] UpdateAdditionalUserModel additionalData)
         {
             try
             {
@@ -131,19 +148,29 @@ namespace CardPay.Controllers
             }
         }
 
-
-        [HttpGet]
+        [HttpPatch]
         [Authorize]
-        [Route("")]
-        public async Task<IActionResult> GetUser()
+        [Route("password")]
+        public async Task<IActionResult> UpdatePassword([FromBody] PasswordModel passowrd)
         {
-            var userToken = TokenManager.GetUser(User.Identity.Name);
-            var user = _userService.GetUser(userToken.id);
+            try
+            {
+                var userToken = TokenManager.GetUser(User.Identity.Name);
 
-            if (user == null)
-                return Ok(BaseDTO<string>.Error("Usuário não encontrado"));
+                var validate = _userService.ValidatePassword(passowrd, userToken.id);
+                if (!string.IsNullOrEmpty(validate))
+                    return Ok(BaseDTO<string>.Error(validate));
 
-            return Ok(BaseDTO<User>.Success("Usuário Encontrado", user));
+                var user = _userService.UpdatePassword(passowrd, userToken.id);
+
+                return Ok(BaseDTO<User>.Success("Dados adicionados com sucesso!", user));
+            }
+            catch (Exception ex)
+            {
+                return Ok(BaseDTO<string>.Error($"Um erro ocorreu durante a atualização dos seus dados. \n {ex.Message}"));
+            }
         }
+
+
     }
 }

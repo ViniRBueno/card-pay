@@ -32,7 +32,7 @@ namespace CardPay.Services
             return user.id_user;
         }
 
-        public bool UpdateAdditionalData(UpdateAdditionalData additionalData, int id)
+        public bool UpdateAdditionalData(UpdateAdditionalUserModel additionalData, int id)
         {
             try
             {
@@ -60,6 +60,67 @@ namespace CardPay.Services
             }
         }
 
+        public User UpdatePassword (PasswordModel password, int id)
+        {
+            var user = GetUser(id);
+
+            user.password = password.newPassowrd;
+            _context.users.Update(user);
+            _context.SaveChanges();
+            return user;
+        }
+
+        public bool UpdateUser(UpdateUserModel userModel, int id)
+        {
+            var user = GetUser(id);
+
+            user.birth_date = userModel.birth_date;
+            user.user_name = userModel.user_name;
+            user.email = userModel.email;
+            user.cpf = userModel.cpf;
+
+            _context.users.Update(user);
+            _context.SaveChanges();
+
+            return true;
+        }
+
+        public string ValidatePassword(PasswordModel passwordModel, int userId)
+        {
+            var user = GetUser(userId);
+
+            if (passwordModel.oldPassowrd == passwordModel.newPassowrd || passwordModel.newPassowrd == user.password)
+                return "Sua senha atual não pode ser igual a sua senha antiga!";
+
+            if (!ValidatePassword(passwordModel.newPassowrd))
+                return "Sua senha deve ter ao menos um caractere maiúsculo, um minúsculo, e um caractere especial.";
+
+            return null;
+        }
+
+        public string ValidateUser(UpdateUserModel user)
+        {
+            if (!ValidateCPF(user.cpf))
+                return "CPF Inválido";
+
+            if (!ValidateEmail(user.email))
+                return "E-mail Inválido!";
+
+            if (string.IsNullOrEmpty(user.user_name))
+                return "Você precisa digitar um nome válido";
+
+            if (user.user_name.Length > 100)
+                return "Seu nome deve ter menos de 100 caracteres";
+
+            if (string.IsNullOrEmpty(user.email))
+                return "E-mail inválido";
+
+            if (user.email.Length < 11)
+                return "Seu login deve ter menos de 11 caracteres";
+
+            return null;
+        }
+
         public User ValidateLogin(LoginModel loginModel)
         {
             if (ValidateLoginData(loginModel))
@@ -84,7 +145,7 @@ namespace CardPay.Services
                 return "E-mail Inválido!";
 
             if (!ValidatePassword(user.password))
-                return "Senha inválida";
+                return "Sua senha deve ter ao menos um caractere maiúsculo, um minúsculo, e um caractere especial.";
 
             if (string.IsNullOrEmpty(user.user_name))
                 return "Você precisa digitar um nome válido";
@@ -93,14 +154,14 @@ namespace CardPay.Services
                 return "Seu nome deve ter menos de 100 caracteres";
 
             if (string.IsNullOrEmpty(user.email))
-                return "Login inválido";
+                return "E-mail inválido";
 
             if (user.email.Length < 11)
                 return "Seu login deve ter menos de 11 caracteres";
 
             return null;
         }
-        
+
         public string ValidateExists(string cpf)
         {
             if (_context.users.Where(user => user.cpf == cpf).FirstOrDefault() != null)
