@@ -13,6 +13,7 @@ using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Text;
 using System.Threading.Tasks;
+using Wkhtmltopdf.NetCore;
 
 namespace CardPay
 {
@@ -33,12 +34,13 @@ namespace CardPay
 
             services.AddControllers();
             services.AddSwaggerGen();
+            services.AddWkhtmltopdf();
             var key = Encoding.ASCII.GetBytes(TokenManager.GetSecret());
             services.AddCors(options =>
             {
                 //remover
                 options.AddPolicy("CorsPolicy", builder => builder.AllowAnyMethod().AllowAnyHeader().AllowCredentials()
-                .WithOrigins("http://localhost:8080", "http://127.0.0.1:8080", "https://localhost:44309"));
+                .WithOrigins("http://localhost:3000", "http://127.0.0.1:8080", "https://localhost:44309"));
             });
             services.AddAuthentication(x =>
             {
