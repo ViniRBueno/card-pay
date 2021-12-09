@@ -1,4 +1,5 @@
-﻿using CardPay.Models;
+﻿using CardPay.Entities;
+using CardPay.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +9,8 @@ namespace CardPay.Interfaces
 {
     public interface ILoanService
     {
-        LoanResultModel CreateLoan(CreateLoanModel loanModel);
+        CreateLoanResultModel CreateLoan(CreateLoanModel loanModel);
+        public LoanResultModel GetResultLoan(int id);
+        public LoanWithParcelsModel GetLoanWithParcels(int id);
     }
 }

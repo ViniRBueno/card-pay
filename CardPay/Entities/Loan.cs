@@ -22,6 +22,9 @@ namespace CardPay.Entities
             loan_value = loanModel.loan_value;
             total_parcels = loanModel.total_parcels;
             id_loanstatus = 1;
+            create_date = DateTime.Now;
+            parcel_value = loanModel.parcel_value;
+            parcel_amount = loanModel.total_parcels;
         }
     }
 }

@@ -1,9 +1,13 @@
-﻿namespace CardPay.Models
+﻿using CardPay.Enums;
+
+namespace CardPay.Models
 {
     public class LoanResultModel
     {
-        public int loanId { get; set; }
-        public string message { get; set; }
-        public string error { get; set; }
+        public LoanResultEnum loanStatusId { get; set; }
+        public string statusDescription { get; set; }
+        public string reason { get; set; }
+        public LoanEstimateModel loanEstimate { get; set; }
+        public LoanWithParcelsModel loanModel { get; set; }
     }
 }

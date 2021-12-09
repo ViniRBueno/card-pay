@@ -1,10 +1,11 @@
-﻿using CardPay.Interfaces;
+﻿using CardPay.Enums;
+using CardPay.Interfaces;
+using CardPay.Jwt;
 using CardPay.Lib;
 using CardPay.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Wkhtmltopdf.NetCore;
 
@@ -24,15 +25,27 @@ namespace CardPay.Controllers
         }
 
         [HttpPost]
-        [Route("{id}/create")]
+        [Route("")]
+        [Authorize]
         public async Task<IActionResult> CreateMember([FromBody] CreateLoanModel loanModel)
         {
             var loan = _loanService.CreateLoan(loanModel);
 
             if (loan.error != null)
-                return UnprocessableEntity(loan.error);
+                return Ok(BaseDTO<string>.Error(loan.error));
 
-            return Ok(loan);
+            return Ok(BaseDTO<CreateLoanResultModel>.Success("Empréstimo criado com sucesso!", loan));
+        }
+
+        [HttpGet]
+        [Route("")]
+        [Authorize]
+        public async Task<IActionResult> GetLoanLoad()
+        {
+            var userToken = TokenManager.GetUser(User.Identity.Name);
+            var loan = _loanService.GetResultLoan(userToken.id);
+
+            return Ok(BaseDTO<LoanResultModel>.Success("", loan));
         }
 
         [HttpGet]
