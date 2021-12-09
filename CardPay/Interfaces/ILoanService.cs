@@ -9,8 +9,9 @@ namespace CardPay.Interfaces
 {
     public interface ILoanService
     {
-        CreateLoanResultModel CreateLoan(CreateLoanModel loanModel);
+        CreateLoanResultModel CreateLoan(decimal loanValue, int id);
         public LoanResultModel GetResultLoan(int id);
         public LoanWithParcelsModel GetLoanWithParcels(int id);
+        public LoanEstimateModel CreateEstimateValue(decimal value);
     }
 }

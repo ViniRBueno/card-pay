@@ -14,5 +14,6 @@ namespace CardPay.Interfaces
         FamilyMember CreateFamilyMember(FamilyMemberModel memberModel, int userId);
         IEnumerable<FamilyMember> GetFamilyMembers(int userId);
         FamilyMember UpdateFamilyMember(FamilyMemberModel memberModel, int userId);
+        bool DeleteFamilyMember(int memberId, int userId);
     }
 }

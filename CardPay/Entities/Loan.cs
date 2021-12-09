@@ -16,15 +16,15 @@ namespace CardPay.Entities
         public int parcel_amount { get; set; }
 
         public Loan() { }
-        public Loan(CreateLoanModel loanModel)
+        public Loan(decimal loanValue, int familyId)
         {
-            id_family = loanModel.id_family;
-            loan_value = loanModel.loan_value;
-            total_parcels = loanModel.total_parcels;
+            id_family = familyId;
+            loan_value = loanValue;
+            total_parcels = 36;
             id_loanstatus = 1;
             create_date = DateTime.Now;
-            parcel_value = loanModel.parcel_value;
-            parcel_amount = loanModel.total_parcels;
+            parcel_value = (loanValue * 1.05M) / 36;
+            parcel_amount = 36;
         }
     }
 }

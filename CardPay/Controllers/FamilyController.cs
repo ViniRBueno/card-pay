@@ -54,5 +54,22 @@ namespace CardPay.Controllers
                 return Ok(BaseDTO<string>.Error(ex.Message));
             }
         }
+
+        [HttpDelete]
+        [Authorize]
+        [Route("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            try
+            {
+                var userToken = TokenManager.GetUser(User.Identity.Name);
+                _familyService.DeleteFamilyMember(id, userToken.id);
+                return Ok(BaseDTO<string>.Success("Memebro deletado com sucesso", ""));
+            }
+            catch (Exception ex)
+            {
+                return Ok(BaseDTO<string>.Error(ex.Message));
+            }
+        }
     }
 }

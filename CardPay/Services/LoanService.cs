@@ -22,9 +22,10 @@ namespace CardPay.Services
             _context = new CardPayContext(contextOptions);
         }
 
-        public CreateLoanResultModel CreateLoan(CreateLoanModel loanModel)
+        public CreateLoanResultModel CreateLoan(decimal loanValue, int id)
         {
-            var loans = _context.loans.Where(l => l.id_family == loanModel.id_family).ToList();
+            var family = GetFamily(id);
+            var loans = _context.loans.Where(l => l.id_family == family.id_family).ToList();
 
             foreach (var loan in loans)
             {
@@ -35,7 +36,7 @@ namespace CardPay.Services
                     return new CreateLoanResultModel() { error = "Só pode haver um empréstimo ativo por cadastro" };
             }
 
-            var loanDb = new Loan(loanModel);
+            var loanDb = new Loan(loanValue, family.id_family);
 
             _context.loans.Add(loanDb);
             _context.SaveChanges();
@@ -61,7 +62,8 @@ namespace CardPay.Services
             if (loan == null)
             {
                 result.loanStatusId = LoanResultEnum.Avaliable;
-                result.loanEstimate = CreateEstimate(family);
+                var amount = (family.total_salary / 10) * 36;
+                result.loanEstimate = CreateEstimateValue(amount);
                 return result;
             }
 
@@ -85,22 +87,21 @@ namespace CardPay.Services
             return result;
         }
 
-        private LoanEstimateModel CreateEstimate(Family family)
+        public LoanEstimateModel CreateEstimateValue(decimal value)
         {
             var estimate = new LoanEstimateModel();
-            var salary = family.total_salary;
-            var totalAmount = (salary / 10) * 36;
 
-            if (totalAmount > 10000.00M)
+            if (value > 10000.00M)
                 estimate.loan_value = 10000.00M;
             else
-                estimate.loan_value = totalAmount;
+                estimate.loan_value = value;
 
             estimate.fee = estimate.loan_value * 0.05M;
             estimate.total_parcels = 36;
-            estimate.parcel_value = (estimate.loan_value + estimate.fee) / estimate.total_parcels;
+            estimate.parcel_value = Math.Round(((estimate.loan_value + estimate.fee) / estimate.total_parcels), 2);
 
             return estimate;
+
         }
 
         private Loan GetLoanByFamily(int familyId) => _context.loans.Where(l => l.id_family == familyId).FirstOrDefault();

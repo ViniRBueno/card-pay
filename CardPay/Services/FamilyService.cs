@@ -73,6 +73,21 @@ namespace CardPay.Services
             return updateMember;
         }
 
+        public bool DeleteFamilyMember(int memberId, int userId)
+        {
+            var familyId = GetFamilyByUserId(userId).id_family;
+            var members = GetFamilyMembersByFamilyId(familyId);
+            var userToDelete = members.Where(m => m.id_member == memberId).FirstOrDefault();
+
+            if (userToDelete == null)
+                throw new System.Exception("Membro não encontrado na família!");
+
+            DeleteRegister(userToDelete);
+            UpdateTotalSalary(userId);
+
+            return true;
+        }
+
         public void CreateFamily(int userId)
         {
             var family = new Family(userId);
@@ -102,6 +117,13 @@ namespace CardPay.Services
         private User GetUser(int userId) => _context.users.Where(u => u.id_user == userId).FirstOrDefault();
 
         private IEnumerable<FamilyMember> GetFamilyMembersByFamilyId(int familyId) => _context.familyMembers.Where(m => m.id_family == familyId).ToList();
+
+        private void DeleteRegister<T>(T entity) where T : class
+        {
+            _context.Set<T>().Attach(entity);
+            _context.Set<T>().Remove(entity);
+            _context.SaveChanges();
+        }
 
         private void CreateRegister<T>(T entity) where T : class
         {

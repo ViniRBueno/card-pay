@@ -27,9 +27,10 @@ namespace CardPay.Controllers
         [HttpPost]
         [Route("")]
         [Authorize]
-        public async Task<IActionResult> CreateMember([FromBody] CreateLoanModel loanModel)
+        public async Task<IActionResult> CreateLoan(decimal loanValue)
         {
-            var loan = _loanService.CreateLoan(loanModel);
+            var userToken = TokenManager.GetUser(User.Identity.Name);
+            var loan = _loanService.CreateLoan(loanValue, userToken.id);
 
             if (loan.error != null)
                 return Ok(BaseDTO<string>.Error(loan.error));
@@ -47,6 +48,17 @@ namespace CardPay.Controllers
 
             return Ok(BaseDTO<LoanResultModel>.Success("", loan));
         }
+
+        [HttpGet]
+        [Route("{value}")]
+        [Authorize]
+        public async Task<IActionResult> SimulateLoan(decimal value)
+        {
+            var estimate = _loanService.CreateEstimateValue(value);
+
+            return Ok(BaseDTO<LoanEstimateModel>.Success("", estimate));
+        }
+
 
         [HttpGet]
         [Route("/boleto")]
