@@ -23,14 +23,17 @@ namespace CardPay.Services
         {
             var family = new List<FamilyMember>();
             var user = GetUser(userId);
+            
+            
+            var familyId = GetFamilyByUserId(userId).id_family;
             family.Add(new FamilyMember()
             {
+                id_family = familyId,
+                id_member = 0,
                 cpf = user.cpf,
                 member_name = user.user_name,
                 salary = user.salary
             });
-            
-            var familyId = GetFamilyByUserId(userId).id_family;
             var members = _context.familyMembers.Where(f => f.id_family == familyId).ToList();
 
             foreach (var member in members)

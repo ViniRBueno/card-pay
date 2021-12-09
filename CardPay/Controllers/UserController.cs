@@ -47,14 +47,19 @@ namespace CardPay.Controllers
             try
             {
                 var user = _userService.ValidateLogin(loginModel);
-                var token = TokenManager.GenerateToken(user, 10);
+                var token = TokenManager.GenerateToken(user, 1200);
                 var cookieOptions = new CookieOptions()
                 {
-                    Expires = DateTime.Now.AddMinutes(30),
+                    Expires = DateTime.Now.AddMinutes(1200),
                     IsEssential = true
                 };
                 Response.Cookies.Append("access-token", token, cookieOptions);
-                return Ok(BaseDTO<string>.Success("Login feito com sucesso!", token));
+                var result = new LoginResultModel
+                {
+                    token = token,
+                    user = new UserToken(user)
+                };
+                return Ok(BaseDTO<LoginResultModel>.Success("Login feito com sucesso!", result));
 
             }
             catch (Exception ex)
@@ -163,7 +168,7 @@ namespace CardPay.Controllers
 
                 var user = _userService.UpdatePassword(passowrd, userToken.id);
 
-                return Ok(BaseDTO<User>.Success("Dados adicionados com sucesso!", user));
+                return Ok(BaseDTO<User>.Success("Senha atualizada com sucesso!", user));
             }
             catch (Exception ex)
             {

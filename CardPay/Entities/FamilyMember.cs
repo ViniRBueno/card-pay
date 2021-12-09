@@ -12,6 +12,7 @@ namespace CardPay.Entities
         public FamilyMember() { }
         public FamilyMember(FamilyMemberModel memberModel, int familyId)
         {
+            id_member = memberModel.id;
             id_family = familyId;
             cpf = memberModel.cpf;
             member_name = memberModel.member_name;

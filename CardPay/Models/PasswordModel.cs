@@ -7,7 +7,7 @@ namespace CardPay.Models
 {
     public class PasswordModel
     {
-        public string oldPassowrd { get; set; }
-        public string newPassowrd { get; set; }
+        public string oldPassword { get; set; }
+        public string newPassword { get; set; }
     }
 }

@@ -37,21 +37,25 @@ namespace CardPay.Services
             try
             {
                 var user = GetUser(id);
-                user.salary = additionalData.salary;
-                _context.users.Update(user);
-
-                var account = new Account(additionalData.account, id);
-                var oldAccount = _context.accounts.Where(acc => acc.id_user == id && acc._active == 0).FirstOrDefault();
-
-                if (oldAccount != null)
+                if (additionalData.salary.HasValue)
                 {
-                    oldAccount._active = 0;
-                    _context.accounts.Update(oldAccount);
+                    user.salary = additionalData.salary.Value;
+                    _context.users.Update(user);
                 }
+                if (additionalData.account != null)
+                {
+                    var account = new Account(additionalData.account, id);
+                    var oldAccount = _context.accounts.Where(acc => acc.id_user == id && acc._active == 1).FirstOrDefault();
 
-                _context.accounts.Add(account);
+                    if (oldAccount != null)
+                    {
+                        oldAccount._active = 0;
+                        _context.accounts.Update(oldAccount);
+                    }
+
+                    _context.accounts.Add(account);
+                }
                 _context.SaveChanges();
-
                 return true;
             }
             catch
@@ -63,8 +67,7 @@ namespace CardPay.Services
         public User UpdatePassword (PasswordModel password, int id)
         {
             var user = GetUser(id);
-
-            user.password = password.newPassowrd;
+            user.password = password.newPassword;
             _context.users.Update(user);
             _context.SaveChanges();
             return user;
@@ -88,11 +91,13 @@ namespace CardPay.Services
         public string ValidatePassword(PasswordModel passwordModel, int userId)
         {
             var user = GetUser(userId);
+            if (user.password != passwordModel.oldPassword)
+                return "A senha atual informada não confere com sua senha atual!";
 
-            if (passwordModel.oldPassowrd == passwordModel.newPassowrd || passwordModel.newPassowrd == user.password)
+            if (passwordModel.oldPassword == passwordModel.newPassword || passwordModel.newPassword == user.password)
                 return "Sua senha atual não pode ser igual a sua senha antiga!";
 
-            if (!ValidatePassword(passwordModel.newPassowrd))
+            if (!ValidatePassword(passwordModel.newPassword))
                 return "Sua senha deve ter ao menos um caractere maiúsculo, um minúsculo, e um caractere especial.";
 
             return null;

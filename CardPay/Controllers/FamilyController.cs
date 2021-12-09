@@ -41,7 +41,6 @@ namespace CardPay.Controllers
 
         [HttpPut]
         [Authorize]
-        [Route("{id}")]
         public async Task<IActionResult> UpdateMember([FromBody] FamilyMemberModel memberModel)
         {
             try
