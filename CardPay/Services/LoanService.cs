@@ -87,6 +87,9 @@ namespace CardPay.Services
             return result;
         }
 
+        public List<Bank> ListBanks() => _context.banks.ToList();
+
+
         public LoanEstimateModel CreateEstimateValue(decimal value)
         {
             var estimate = new LoanEstimateModel();

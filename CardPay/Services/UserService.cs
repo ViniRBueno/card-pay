@@ -64,7 +64,7 @@ namespace CardPay.Services
             }
         }
 
-        public User UpdatePassword (PasswordModel password, int id)
+        public User UpdatePassword(PasswordModel password, int id)
         {
             var user = GetUser(id);
             user.password = password.newPassword;
@@ -126,12 +126,13 @@ namespace CardPay.Services
             return null;
         }
 
-        public User ValidateLogin(LoginModel loginModel)
+        public User ValidateUserLogin(LoginModel loginModel)
         {
             if (ValidateLoginData(loginModel))
                 throw new System.Exception(loginErr);
 
             var user = GetUserByLogin(loginModel.login);
+
             if (user == null)
                 throw new System.Exception(loginErr);
 
@@ -139,6 +140,22 @@ namespace CardPay.Services
                 throw new System.Exception(loginErr);
 
             return user;
+        }
+
+        public Admin ValidateAdminLogin(LoginModel loginModel)
+        {
+            if (ValidateLoginData(loginModel))
+                throw new System.Exception(loginErr);
+
+            var admin = GetAdminByLogin(loginModel.login);
+
+            if (admin == null)
+                return null;
+
+            if (admin.password != loginModel.password)
+                throw new System.Exception(loginErr);
+
+            return admin;
         }
 
         public string ValidateUser(UserModel user)
@@ -235,6 +252,8 @@ namespace CardPay.Services
         private bool ValidateLoginData(LoginModel login) => string.IsNullOrEmpty(login.login) || string.IsNullOrEmpty(login.password) ? true : false;
 
         private User GetUserByLogin(string login) => _context.users.Where(u => u.email == login).FirstOrDefault();
+
+        private Admin GetAdminByLogin(string login) => _context.admins.Where(a => a.email == login).FirstOrDefault();
         #endregion
     }
 }

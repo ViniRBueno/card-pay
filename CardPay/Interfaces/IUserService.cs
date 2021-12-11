@@ -13,7 +13,8 @@ namespace CardPay.Interfaces
         bool UpdateAdditionalData(UpdateAdditionalUserModel userModel, int id);
         bool UpdateUser(UpdateUserModel userModel, int id);
         User UpdatePassword(PasswordModel password, int id);
-        User ValidateLogin(LoginModel loginModel);
+        User ValidateUserLogin(LoginModel loginModel);
+        Admin ValidateAdminLogin(LoginModel loginModel);
         string ValidatePassword(PasswordModel passwordModel, int userId);
     }
 }

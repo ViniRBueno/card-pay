@@ -1,4 +1,5 @@
-﻿using CardPay.Enums;
+﻿using CardPay.Entities;
+using CardPay.Enums;
 using CardPay.Interfaces;
 using CardPay.Jwt;
 using CardPay.Lib;
@@ -6,6 +7,7 @@ using CardPay.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Wkhtmltopdf.NetCore;
 
@@ -47,6 +49,16 @@ namespace CardPay.Controllers
             var loan = _loanService.GetResultLoan(userToken.id);
 
             return Ok(BaseDTO<LoanResultModel>.Success("", loan));
+        }
+
+        [HttpGet]
+        [Route("/banks")]
+        [Authorize]
+        public async Task<IActionResult> ListBanks()
+        {
+            var banks = _loanService.ListBanks();
+
+            return Ok(BaseDTO<List<Bank>>.Success("Bancos retornados com sucesso!", banks));
         }
 
         [HttpGet]

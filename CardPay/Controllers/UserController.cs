@@ -46,21 +46,32 @@ namespace CardPay.Controllers
         {
             try
             {
-                var user = _userService.ValidateLogin(loginModel);
-                var token = TokenManager.GenerateToken(user, 1200);
+                var result = new LoginResultModel();
+                var user = _userService.ValidateUserLogin(loginModel);
+                string token = "";
+
+                if (user == null)
+                {
+                    var admin = _userService.ValidateAdminLogin(loginModel);
+                    token = TokenManager.GenerateToken(admin, 1200);
+                    result.user = new UserToken(admin);
+                }
+                else
+                {
+                    token = TokenManager.GenerateToken(user, 1200);
+                    result.user = new UserToken(user);
+                }
+
                 var cookieOptions = new CookieOptions()
                 {
                     Expires = DateTime.Now.AddMinutes(1200),
                     IsEssential = true
                 };
-                Response.Cookies.Append("access-token", token, cookieOptions);
-                var result = new LoginResultModel
-                {
-                    token = token,
-                    user = new UserToken(user)
-                };
-                return Ok(BaseDTO<LoginResultModel>.Success("Login feito com sucesso!", result));
 
+                Response.Cookies.Append("access-token", token, cookieOptions);
+                result.token = token;
+
+                return Ok(BaseDTO<LoginResultModel>.Success("Login feito com sucesso!", result));
             }
             catch (Exception ex)
             {

@@ -24,6 +24,11 @@ namespace CardPay.Jwt
             string data = JsonConvert.SerializeObject(new UserToken(user));
             return tokenInstance.GenerateToken(data, minutes);
         }
+        public static string GenerateToken(Admin admin, int minutes = 720)
+        {
+            string data = JsonConvert.SerializeObject(new UserToken(admin));
+            return tokenInstance.GenerateToken(data, minutes);
+        }
         public static UserToken GetUser(string data)
         {
             UserToken user = JsonConvert.DeserializeObject<UserToken>(data);
