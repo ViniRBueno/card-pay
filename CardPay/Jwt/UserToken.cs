@@ -10,7 +10,7 @@ namespace CardPay.Jwt
             id = user.id_user;
             email = user.email;
             user_name = user.user_name;
-            is_admin = false;
+            is_admin = true;
         }
         public UserToken(Admin admin)
         {

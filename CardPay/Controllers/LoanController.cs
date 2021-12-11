@@ -51,15 +51,6 @@ namespace CardPay.Controllers
             return Ok(BaseDTO<LoanResultModel>.Success("", loan));
         }
 
-        [HttpGet]
-        [Route("/banks")]
-        [Authorize]
-        public async Task<IActionResult> ListBanks()
-        {
-            var banks = _loanService.ListBanks();
-
-            return Ok(BaseDTO<List<Bank>>.Success("Bancos retornados com sucesso!", banks));
-        }
 
         [HttpGet]
         [Route("{value}")]
@@ -71,6 +62,15 @@ namespace CardPay.Controllers
             return Ok(BaseDTO<LoanEstimateModel>.Success("", estimate));
         }
 
+        [HttpGet]
+        [Route("banks")]
+        [Authorize]
+        public async Task<IActionResult> ListBanks()
+        {
+            var banks = _loanService.ListBanks();
+
+            return Ok(BaseDTO<List<Bank>>.Success("Bancos retornados com sucesso!", banks));
+        }
 
         [HttpGet]
         [Route("/boleto")]
