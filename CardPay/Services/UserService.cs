@@ -134,7 +134,7 @@ namespace CardPay.Services
             var user = GetUserByLogin(loginModel.login);
 
             if (user == null)
-                throw new System.Exception(loginErr);
+                return null;
 
             if (user.password != loginModel.password)
                 throw new System.Exception(loginErr);
