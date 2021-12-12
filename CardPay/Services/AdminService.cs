@@ -22,12 +22,35 @@ namespace CardPay.Services
             _context = new CardPayContext(contextOptions);
         }
 
-        public List<Loan> ListLoansByStatusId(int? id)
+        public List<ListLoanModel> ListLoansByStatusId(int? id)
         {
-            if (id == null)
-                return _context.loans.ToList();
+            var loanListModel = new List<ListLoanModel>();
+            var loans = new List<Loan>();
 
-            return _context.loans.Where(l => l.id_loanstatus == id).ToList();
+            if (id == null)
+                loans = _context.loans.ToList();
+            else
+                loans = _context.loans.Where(l => l.id_loanstatus == id).ToList();
+
+            foreach (var loan in loans)
+            {
+                var family = _context.families.Where(f => f.id_family == loan.id_family).FirstOrDefault();
+                var user = _context.users.Where(u => u.id_user == family.id_user).FirstOrDefault();
+                var members = _context.familyMembers.Where(fm => fm.id_family == family.id_family).ToList();
+                var parcels = _context.parcels.Where(p => p.id_loan == loan.id_loan).ToList();
+
+                loanListModel.Add(new ListLoanModel() 
+                { 
+                    userId = user.id_user,
+                    userName = user.user_name,
+                    loan = loan,
+                    familyMembers = members,
+                    parcels = parcels
+                });
+
+            }
+
+            return loanListModel;
         }
 
         public LoanInfoModel GetLoanDetail(int id)

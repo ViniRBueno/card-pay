@@ -32,7 +32,7 @@ namespace CardPay.Controllers
 
             var loans = _adminService.ListLoansByStatusId(id);
 
-            return Ok(BaseDTO<List<Loan>>.Success("Loans retornados com sucesso!", loans));
+            return Ok(BaseDTO<List<ListLoanModel>>.Success("Loans retornados com sucesso!", loans));
         }
 
         [HttpGet]

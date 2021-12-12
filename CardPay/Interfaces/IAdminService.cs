@@ -6,7 +6,7 @@ namespace CardPay.Interfaces
 {
     public interface IAdminService
     {
-        List<Loan> ListLoansByStatusId(int? id);
+        List<ListLoanModel> ListLoansByStatusId(int? id);
         Loan UpdateLoanStatus(UpdateLoanModel updateLoan);
         LoanInfoModel GetLoanDetail(int id);
         Parcel UpdateParcelStatus(int parcelId, bool paydOnTime);
