@@ -97,14 +97,14 @@ namespace CardPay.Services
             return loan;
         }
 
-        public Parcel UpdateParcelStatus(int parcelId)
+        public Parcel UpdateParcelStatus(int parcelId, bool payed)
         {
             var parcel = _context.parcels.Where(p => p.id_parcel == parcelId).FirstOrDefault();
 
             if (parcel == null)
                 return null;
 
-            parcel.id_status = 2;
+            parcel.id_status = payed ? 2 : 3;
 
             UpdateRegister(parcel);
 

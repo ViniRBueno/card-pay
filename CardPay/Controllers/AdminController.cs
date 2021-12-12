@@ -67,14 +67,14 @@ namespace CardPay.Controllers
 
 
         [HttpPatch]
-        [Route("parcel/{id}")]
+        [Route("parcel/{id}/{payed}")]
         [Authorize]
-        public async Task<IActionResult> UpdateLoan(int id)
+        public async Task<IActionResult> UpdateLoan(int id, bool payed)
         {
             if (!ValidateAdminToken())
                 return Ok(BaseDTO<string>.Error("Login inválido para esta operação!"));
 
-            var parcel = _adminService.UpdateParcelStatus(id);
+            var parcel = _adminService.UpdateParcelStatus(id, payed);
 
             return Ok(BaseDTO<Parcel>.Success("Parcela atualizada com sucesso!", parcel));
         }
