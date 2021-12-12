@@ -12,6 +12,7 @@ namespace CardPay.Models
         public string userName { get; set; }
         public string cpf { get; set; }
         public int SLA { get; set; }
+        public string statusName { get; set; }
         public Loan loan { get; set; }
         public List<FamilyMember> familyMembers { get; set; }
         public List<Parcel> parcels { get; set; }

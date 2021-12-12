@@ -16,10 +16,12 @@ namespace CardPay.Controllers
     public class AdminController : ControllerBase
     {
         private readonly IAdminService _adminService;
+        private readonly IFamilyService _familyService;
 
-        public AdminController(IAdminService adminService)
+        public AdminController(IAdminService adminService, IFamilyService familyService)
         {
             _adminService = adminService;
+            _familyService = familyService;
         }
 
         [HttpGet]
@@ -43,9 +45,11 @@ namespace CardPay.Controllers
             if (!ValidateAdminToken())
                 return Ok(BaseDTO<string>.Error("Login inválido para esta operação!"));
 
-            var loan = _adminService.GetLoanDetail(id);
+            var loanDetail = _adminService.GetLoanDetail(id);
 
-            return Ok(BaseDTO<LoanInfoModel>.Success("Loans retornados com sucesso!", loan));
+            loanDetail.familyMembers = _familyService.GetFamilyMembers(loanDetail.family.id_user).ToList();
+
+            return Ok(BaseDTO<LoanInfoModel>.Success("Loans retornados com sucesso!", loanDetail));
         }
 
         [HttpPatch]

@@ -38,12 +38,14 @@ namespace CardPay.Services
                 var user = _context.users.Where(u => u.id_user == family.id_user).FirstOrDefault();
                 var members = _context.familyMembers.Where(fm => fm.id_family == family.id_family).ToList();
                 var parcels = _context.parcels.Where(p => p.id_loan == loan.id_loan).ToList();
+                var statusLoan = _context.loanstatuses.Where(s => s.id_loanstatus == loan.id_loanstatus).FirstOrDefault();
 
-                loanListModel.Add(new ListLoanModel() 
-                { 
+                loanListModel.Add(new ListLoanModel()
+                {
                     userId = user.id_user,
                     userName = user.user_name,
                     cpf = user.cpf,
+                    statusName = statusLoan.name_status,
                     loan = loan,
                     familyMembers = members,
                     parcels = parcels,
@@ -60,7 +62,6 @@ namespace CardPay.Services
             var loanInfo = new LoanInfoModel();
             loanInfo.loan = _context.loans.Where(l => l.id_loan == id).FirstOrDefault();
             loanInfo.family = _context.families.Where(f => f.id_family == loanInfo.loan.id_family).FirstOrDefault();
-            loanInfo.familyMembers = _context.familyMembers.Where(m => m.id_family == loanInfo.family.id_family).ToList();
             return loanInfo;
         }
 
@@ -99,7 +100,7 @@ namespace CardPay.Services
             if (parcel == null)
                 return null;
 
-            parcel.id_status = paydOnTime ? 2:3;
+            parcel.id_status = paydOnTime ? 2 : 3;
 
             UpdateRegister(parcel);
 
@@ -135,7 +136,7 @@ namespace CardPay.Services
             string chumbado = "1029";
             string misturador = loan.id_family.ToString() + loan.id_loan.ToString() + loan.parcel_amount.ToString() + iterator.ToString();
             misturador = AdicionaZeros(misturador, 25) + "1";
-            string vencimento = ExpireDays(expireDate).ToString().Replace("-","");
+            string vencimento = ExpireDays(expireDate).ToString().Replace("-", "");
             string valorParcela = loan.parcel_value.ToString().Replace(",", "");
             valorParcela = AdicionaZeros(valorParcela, 10);
             return chumbado + misturador + vencimento + valorParcela;
