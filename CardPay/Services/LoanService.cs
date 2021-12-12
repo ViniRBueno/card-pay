@@ -31,7 +31,6 @@ namespace CardPay.Services
             {
                 if (loan.id_loanstatus == (int)LoanStatusEnum.Active
                     || loan.id_loanstatus == (int)LoanStatusEnum.Created
-                    || loan.id_loanstatus == (int)LoanStatusEnum.Rejected
                     || loan.create_date <= fiveYears)
                     return new CreateLoanResultModel() { error = "Só pode haver um empréstimo ativo por cadastro" };
             }
@@ -58,11 +57,10 @@ namespace CardPay.Services
             var result = new LoanResultModel();
             var family = GetFamily(id);
             var loan = GetLoanByFamily(family.id_family);
-
+            var amount = (family.total_salary / 10) * 36;
             if (loan == null)
             {
                 result.loanStatusId = LoanResultEnum.Avaliable;
-                var amount = (family.total_salary / 10) * 36;
                 result.loanEstimate = CreateEstimateValue(amount);
                 return result;
             }
@@ -70,6 +68,7 @@ namespace CardPay.Services
             if (loan.id_loanstatus == (int)LoanStatusEnum.Rejected)
             {
                 result.loanStatusId = LoanResultEnum.Negated;
+                result.loanEstimate = CreateEstimateValue(amount);
                 result.reason = loan.reason;
                 return result;
             }
@@ -107,7 +106,7 @@ namespace CardPay.Services
 
         }
 
-        private Loan GetLoanByFamily(int familyId) => _context.loans.Where(l => l.id_family == familyId).FirstOrDefault();
+        private Loan GetLoanByFamily(int familyId) => _context.loans.Where(l => l.id_family == familyId).OrderByDescending(l => l.id_loan).FirstOrDefault();
 
         private Family GetFamily(int userId) => _context.families.Where(f => f.id_user == userId).FirstOrDefault();
 

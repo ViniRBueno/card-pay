@@ -37,6 +37,9 @@ namespace CardPay.Services
             try
             {
                 var user = GetUser(id);
+                //if (HasActiveLoanRequest(id))
+                //    throw new System.Exception("Você não pode alterar esse tipo de informação pois já possui um empréstimo pendente de aprovação!");
+                
                 if (additionalData.salary.HasValue)
                 {
                     user.salary = additionalData.salary.Value;
@@ -63,6 +66,13 @@ namespace CardPay.Services
                 throw;
             }
         }
+
+        //public bool HasActiveLoanRequest(int id_user)
+        //{
+        //    var familly = _context.families.Where(f => f.id_user == id_user).FirstOrDefault();
+        //    var lastLoan = _context.loans.Where(l => l.id_family == familly.id_family).OrderByDescending(l => l.id_loan).FirstOrDefault();
+        //    return lastLoan.IsActive() || lastLoan.IsPendingApproval();
+        //}
 
         public User UpdatePassword(PasswordModel password, int id)
         {

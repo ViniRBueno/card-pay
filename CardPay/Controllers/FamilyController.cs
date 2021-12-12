@@ -34,9 +34,16 @@ namespace CardPay.Controllers
         [Authorize]
         public async Task<IActionResult> AddMember([FromBody] FamilyMemberModel memberModel)
         {
-            var userToken = TokenManager.GetUser(User.Identity.Name);
-            var familyMember = _familyService.CreateFamilyMember(memberModel, userToken.id);
-            return Ok(BaseDTO<FamilyMember>.Success("Memebro criado com sucesso", familyMember));
+            try
+            {
+                var userToken = TokenManager.GetUser(User.Identity.Name);
+                var familyMember = _familyService.CreateFamilyMember(memberModel, userToken.id);
+                return Ok(BaseDTO<FamilyMember>.Success("Memebro criado com sucesso", familyMember));
+            }
+            catch (Exception ex)
+            {
+                return Ok(BaseDTO<string>.Error(ex.Message));
+            }
         }
 
         [HttpPut]
@@ -64,7 +71,7 @@ namespace CardPay.Controllers
             {
                 var userToken = TokenManager.GetUser(User.Identity.Name);
                 _familyService.DeleteFamilyMember(id, userToken.id);
-                return Ok(BaseDTO<string>.Success("Memebro deletado com sucesso", ""));
+                return Ok(BaseDTO<string>.Success("Membro deletado com sucesso", ""));
             }
             catch (Exception ex)
             {
