@@ -63,6 +63,37 @@ namespace CardPay.Controllers
         }
 
         [HttpGet]
+        [Route("parcels")]
+        [Authorize]
+        public async Task<IActionResult> ListParcels()
+        {
+            var userToken = TokenManager.GetUser(User.Identity.Name);
+            var parcels = _loanService.GetParcels(userToken.id);
+
+            return Ok(BaseDTO<List<Parcel>>.Success("Bancos retornados com sucesso!", parcels));
+        }
+
+        [HttpGet]
+        [Route("ticket/{id}")]
+        [Authorize]
+        public async Task<IActionResult> GetTicketById(int id)
+        {
+            var userToken = TokenManager.GetUser(User.Identity.Name);
+            var formated = _loanService.GenerateParcelData(userToken.id, id, userToken.is_admin);
+
+            if (formated == null)
+                return Ok(BaseDTO<string>.Error("Você não tem acesso a este boleto!"));
+
+            var pdf = _generatePdf.GetPDF(formated);
+            var pdfStream = new System.IO.MemoryStream();
+            pdfStream.Write(pdf, 0, pdf.Length);
+            pdfStream.Position = 0;
+            var result = new FileStreamResult(pdfStream, "application/pdf");
+
+            return Ok(BaseDTO<FileStreamResult>.Success("", result));
+        }
+
+        [HttpGet]
         [Route("banks")]
         [Authorize]
         public async Task<IActionResult> ListBanks()

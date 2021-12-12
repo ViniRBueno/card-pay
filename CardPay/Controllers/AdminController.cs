@@ -23,7 +23,7 @@ namespace CardPay.Controllers
         }
 
         [HttpGet]
-        [Route("list")]
+        [Route("loan/list")]
         [Authorize]
         public async Task<IActionResult> ListLoans([FromQuery]int? id)
         {
@@ -36,7 +36,7 @@ namespace CardPay.Controllers
         }
 
         [HttpGet]
-        [Route("{id}")]
+        [Route("loan/detail/{id}")]
         [Authorize]
         public async Task<IActionResult> GetLoanDetail(int id)
         {
@@ -49,7 +49,7 @@ namespace CardPay.Controllers
         }
 
         [HttpPatch]
-        [Route("")]
+        [Route("loan")]
         [Authorize]
         public async Task<IActionResult> UpdateLoan(UpdateLoanModel updateLoan)
         {

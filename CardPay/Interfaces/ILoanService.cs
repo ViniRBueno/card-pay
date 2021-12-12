@@ -14,5 +14,7 @@ namespace CardPay.Interfaces
         public LoanWithParcelsModel GetLoanWithParcels(int id);
         public LoanEstimateModel CreateEstimateValue(decimal value);
         List<Bank> ListBanks();
+        List<Parcel> GetParcels(int id);
+        string GenerateParcelData(int userId, int parcelId, bool isAdmin);
     }
 }

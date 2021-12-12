@@ -1,7 +1,9 @@
 ﻿using CardPay.Entities;
 using CardPay.Enums;
 using CardPay.Interfaces;
+using CardPay.Lib;
 using CardPay.Models;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -13,6 +15,7 @@ namespace CardPay.Services
     {
         private DateTime fiveYears = DateTime.Now.AddYears(-5);
         CardPayContext _context;
+
         public LoanService()
         {
             var contextOptions = new DbContextOptionsBuilder<CardPayContext>()
@@ -87,6 +90,45 @@ namespace CardPay.Services
             return result;
         }
 
+        public List<Parcel> GetParcels(int id)
+        {
+            var family = GetFamily(id);
+            var loan = _context.loans.Where(l => l.id_family == family.id_family && l.id_loanstatus == 2).FirstOrDefault();
+            return _context.parcels.Where(p => p.id_loan == loan.id_loan).ToList();
+        }
+
+        public string GenerateParcelData(int userId, int parcelId, bool isAdmin = false)
+        {
+            var user = GetUserById(userId);
+            var parcel = _context.parcels.Where(p => p.id_parcel == parcelId).FirstOrDefault();
+
+            if (ValidateGetParcel(user, parcel, isAdmin))
+                return null;
+
+            var boleto = new ZBoleto();
+            boleto.NomeCliente = user.user_name;
+            boleto.CpfCliente = user.cpf;
+            boleto.NumerBoleto = parcel.id_parcel.ToString();
+            boleto.Valor = parcel.parcel_value;
+            boleto.Descricao = $"Parcela número {parcel.parcel_number}";
+            boleto.CodigoBarras = parcel.ticket_number;
+            boleto.LinhaDigitavel = parcel.ticket_number.Insert(5,"-").Insert(11," ").Insert(18,".").Insert(25, " ").Insert(31, ".").Insert(38," ").Insert(40, " ");
+            boleto.DataVencimento = parcel.expire_date;
+
+            var geradorBoleto = new GeradorDeBoleto(boleto);
+            return geradorBoleto.GerarBoleto();
+        }
+
+        private bool ValidateGetParcel(User user, Parcel parcel, bool IsAdmin)
+        {
+            var family = GetFamily(user.id_user);
+            var loan = _context.loans.Where(l => l.id_loan == parcel.id_loan).FirstOrDefault();
+
+            if (loan.id_family == family.id_family && IsAdmin)
+                return false;
+            return true;
+        }
+
         public List<Bank> ListBanks() => _context.banks.ToList();
 
 
@@ -106,6 +148,8 @@ namespace CardPay.Services
             return estimate;
 
         }
+
+        private User GetUserById(int userId) => _context.users.Where(u => u.id_user == userId).FirstOrDefault();
 
         private Loan GetLoanByFamily(int familyId) => _context.loans.Where(l => l.id_family == familyId).FirstOrDefault();
 
