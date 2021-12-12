@@ -8,7 +8,7 @@ namespace CardPay.Models
     public class UpdateLoanModel
     {
         public int loanId { get; set; }
-        public bool approved { get; set; }
+        public int approved { get; set; }
         public string reason { get; set; }
     }
 }

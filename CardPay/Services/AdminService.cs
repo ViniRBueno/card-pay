@@ -69,16 +69,20 @@ namespace CardPay.Services
             if (loan == null)
                 return null;
 
-            if (!updateLoan.approved)
+            if (updateLoan.approved == 2)
             {
                 loan.id_loanstatus = (int)LoanStatusEnum.Rejected;
                 loan.reason = updateLoan.reason;
             }
-            else
+            else if (updateLoan.approved == 1)
             {
                 loan.id_loanstatus = (int)LoanStatusEnum.Active;
 
                 CreateParcels(loan);
+            }
+            else
+            {
+                loan.id_loanstatus = (int)LoanStatusEnum.Fraud;
             }
 
             UpdateRegister(loan);

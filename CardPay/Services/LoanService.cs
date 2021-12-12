@@ -36,6 +36,9 @@ namespace CardPay.Services
                     || loan.id_loanstatus == (int)LoanStatusEnum.Created
                     || loan.create_date <= fiveYears)
                     return new CreateLoanResultModel() { error = "Só pode haver um empréstimo ativo por cadastro" };
+                
+                if (loan.id_loanstatus == (int)LoanStatusEnum.Fraud)
+                    return new CreateLoanResultModel() { error = "Seu empréstimo foi rejeitado por fraude, você não pode solicitar novos empréstimos" };
             }
 
             var loanDb = new Loan(loanValue, family.id_family);

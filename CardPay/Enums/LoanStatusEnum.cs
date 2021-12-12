@@ -14,6 +14,9 @@ namespace CardPay.Enums
         Rejected = 3,
 
         [Description("Empréstimo já finalizado")]
-        Inactive = 4
+        Inactive = 4,
+
+        [Description("Empréstimo rejeitado por fraude")]
+        Fraud = 5
     }
 }
