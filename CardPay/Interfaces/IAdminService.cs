@@ -9,6 +9,6 @@ namespace CardPay.Interfaces
         List<ListLoanModel> ListLoansByStatusId(int? id);
         Loan UpdateLoanStatus(UpdateLoanModel updateLoan);
         LoanInfoModel GetLoanDetail(int id);
-        Parcel UpdateParcelStatus(int parcelId, bool paydOnTime);
+        Parcel UpdateParcelStatus(int parcelId);
     }
 }

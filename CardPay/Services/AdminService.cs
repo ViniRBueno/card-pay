@@ -61,6 +61,11 @@ namespace CardPay.Services
             loanInfo.loan = _context.loans.Where(l => l.id_loan == id).FirstOrDefault();
             loanInfo.family = _context.families.Where(f => f.id_family == loanInfo.loan.id_family).FirstOrDefault();
             loanInfo.parcels = _context.parcels.Where(p => p.id_loan == loanInfo.loan.id_loan).ToList();
+            foreach (var parcel in loanInfo.parcels)
+            {
+                parcel.id_status = parcel.expire_date < DateTime.Now && parcel.id_status == 1 ? 3 : parcel.id_status;
+            }
+
             return loanInfo;
         }
 
@@ -92,14 +97,14 @@ namespace CardPay.Services
             return loan;
         }
 
-        public Parcel UpdateParcelStatus(int parcelId, bool paydOnTime)
+        public Parcel UpdateParcelStatus(int parcelId)
         {
             var parcel = _context.parcels.Where(p => p.id_parcel == parcelId).FirstOrDefault();
 
             if (parcel == null)
                 return null;
 
-            parcel.id_status = paydOnTime ? 2 : 3;
+            parcel.id_status = 2;
 
             UpdateRegister(parcel);
 
@@ -109,10 +114,10 @@ namespace CardPay.Services
         private void CreateParcels(Loan loan)
         {
             var parcelList = new List<Parcel>();
-            var expire = DateTime.Now;
+            ;
             for (int i = 1; i <= loan.total_parcels; i++)
             {
-                expire.AddMonths(1);
+                var expire = DateTime.Now.AddMonths(i);
                 parcelList.Add(new Parcel
                 {
                     id_loan = loan.id_loan,
