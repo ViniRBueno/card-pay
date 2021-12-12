@@ -74,7 +74,7 @@ namespace CardPay.Controllers
         }
 
         [HttpGet]
-        [Route("ticket/{id}")]
+        [Route("parcel/{id}")]
         [Authorize]
         public async Task<IActionResult> GetTicketById(int id)
         {
