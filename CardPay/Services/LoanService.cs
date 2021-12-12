@@ -101,9 +101,20 @@ namespace CardPay.Services
 
         public string GenerateParcelData(int userId, int parcelId, bool isAdmin = false)
         {
-            var user = GetUserById(userId);
+            var user = new User();
             var parcel = _context.parcels.Where(p => p.id_parcel == parcelId).FirstOrDefault();
 
+            if (isAdmin)
+            {
+                var familyId = _context.loans.Where(l => l.id_loan == parcel.id_loan).FirstOrDefault().id_family;
+                var idUser = _context.families.Where(f => f.id_family == familyId).FirstOrDefault().id_user;
+                user = GetUserById(idUser);
+            }
+            else
+            {
+                user = GetUserById(userId);
+            }
+            
             if (ValidateGetParcel(user, parcel, isAdmin))
                 return null;
 
