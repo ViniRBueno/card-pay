@@ -58,8 +58,23 @@ namespace CardPay.Controllers
 
             var loan = _adminService.UpdateLoanStatus(updateLoan);
 
-            return Ok(BaseDTO<Loan>.Success("Bancos retornados com sucesso!", loan));
+            return Ok(BaseDTO<Loan>.Success("Loan atualizado com sucesso!", loan));
         }
+
+
+        [HttpPatch]
+        [Route("parcel/{id}/{paydOnTime}")]
+        [Authorize]
+        public async Task<IActionResult> UpdateLoan(int id, bool paydOnTime)
+        {
+            if (!ValidateAdminToken())
+                return Ok(BaseDTO<string>.Error("Login inválido para esta operação!"));
+
+            var parcel = _adminService.UpdateParcelStatus(id, paydOnTime);
+
+            return Ok(BaseDTO<Parcel>.Success("Parcela atualizada com sucesso!", parcel));
+        }
+
 
         private bool ValidateAdminToken() => TokenManager.GetUser(User.Identity.Name).is_admin == true ? true : false;
     }

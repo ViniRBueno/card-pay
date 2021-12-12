@@ -63,6 +63,20 @@ namespace CardPay.Services
             return loan;
         }
 
+        public Parcel UpdateParcelStatus(int parcelId, bool paydOnTime)
+        {
+            var parcel = _context.parcels.Where(p => p.id_parcel == parcelId).FirstOrDefault();
+
+            if (parcel == null)
+                return null;
+
+            parcel.id_status = paydOnTime ? 2:3;
+
+            UpdateRegister(parcel);
+
+            return parcel;
+        }
+
         private void CreateParcels(Loan loan)
         {
             var parcelList = new List<Parcel>();
