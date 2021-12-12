@@ -10,7 +10,7 @@ namespace CardPay.Entities.Map
             builder.ToTable("Tb_LoanStatus");
 
             builder.HasKey(x => x.id_loanstatus);
-            builder.Property(x => x.id_loanstatus).HasColumnName("id_status");
+            builder.Property(x => x.id_loanstatus).HasColumnName("id_loanstatus");
 
             builder.Property(x => x.name_status).HasColumnName("name_status");
 
