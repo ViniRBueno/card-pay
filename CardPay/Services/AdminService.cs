@@ -43,9 +43,11 @@ namespace CardPay.Services
                 { 
                     userId = user.id_user,
                     userName = user.user_name,
+                    cpf = user.cpf,
                     loan = loan,
                     familyMembers = members,
-                    parcels = parcels
+                    parcels = parcels,
+                    SLA = (DateTime.Now - loan.create_date).Days
                 });
 
             }

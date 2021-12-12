@@ -10,6 +10,8 @@ namespace CardPay.Models
     {
         public int userId { get; set; }
         public string userName { get; set; }
+        public string cpf { get; set; }
+        public int SLA { get; set; }
         public Loan loan { get; set; }
         public List<FamilyMember> familyMembers { get; set; }
         public List<Parcel> parcels { get; set; }
