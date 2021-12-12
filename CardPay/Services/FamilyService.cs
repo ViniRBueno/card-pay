@@ -1,4 +1,5 @@
 ﻿using CardPay.Entities;
+using CardPay.Enums;
 using CardPay.Interfaces;
 using CardPay.Models;
 using Microsoft.EntityFrameworkCore;
@@ -46,6 +47,8 @@ namespace CardPay.Services
         public FamilyMember CreateFamilyMember(FamilyMemberModel memberModel, int userId)
         {
             var familyId = GetFamilyByUserId(userId).id_family;
+            //if (HasActiveLoanRequest(familyId))
+            //    throw new System.Exception("Você não pode criar membros, pois já possui uma requisição de empréstimo em atividade!");
             var familyMember = new FamilyMember(memberModel, familyId);
 
             CreateRegister(familyMember);
@@ -57,6 +60,9 @@ namespace CardPay.Services
         public FamilyMember UpdateFamilyMember(FamilyMemberModel memberModel, int userId)
         {
             var familyId = GetFamilyByUserId(userId).id_family;
+            //if (HasActiveLoanRequest(familyId))
+            //    throw new System.Exception("Você não pode atualizar dados dos membros, pois já possui uma requisição de empréstimo em atividade!");
+            
             var members = GetFamilyMembersByFamilyId(familyId);
             var updateMember = members.Where(m => m.id_member == memberModel.id).FirstOrDefault();
 
@@ -117,6 +123,15 @@ namespace CardPay.Services
         private User GetUser(int userId) => _context.users.Where(u => u.id_user == userId).FirstOrDefault();
 
         private IEnumerable<FamilyMember> GetFamilyMembersByFamilyId(int familyId) => _context.familyMembers.Where(m => m.id_family == familyId).ToList();
+
+        //private bool HasActiveLoanRequest(int id_familly)
+        //{
+        //    int[] activeStatus = { (int)LoanStatusEnum.Created, (int)LoanStatusEnum.Active };
+        //    var loan = _context.loans.Where(l => l.id_family == id_familly).OrderByDescending(f => f.id_loan).FirstOrDefault();
+        //    if (loan == null)
+        //        return false;
+        //    return loan.IsActive() || loan.IsPendingApproval();
+        //}
 
         private void DeleteRegister<T>(T entity) where T : class
         {

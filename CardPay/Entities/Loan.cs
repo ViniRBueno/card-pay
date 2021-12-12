@@ -1,4 +1,5 @@
-﻿using CardPay.Models;
+﻿using CardPay.Enums;
+using CardPay.Models;
 using System;
 
 namespace CardPay.Entities
@@ -25,6 +26,15 @@ namespace CardPay.Entities
             create_date = DateTime.Now;
             parcel_value = (loanValue * 1.05M) / 36;
             parcel_amount = 36;
+        }
+
+        public bool IsPendingApproval()
+        {
+            return id_loanstatus == (int)LoanStatusEnum.Created;
+        }
+        public bool IsActive()
+        {
+            return id_loanstatus == (int)LoanStatusEnum.Active;
         }
     }
 }
