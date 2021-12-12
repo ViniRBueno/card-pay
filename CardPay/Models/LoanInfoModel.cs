@@ -11,5 +11,6 @@ namespace CardPay.Models
         public Family family { get; set; }
         public List<FamilyMember> familyMembers { get; set; }
         public Loan loan { get; set; }
+        public List<Parcel> parcels { get; set; }
     }
 }

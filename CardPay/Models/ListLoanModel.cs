@@ -15,6 +15,5 @@ namespace CardPay.Models
         public string statusName { get; set; }
         public Loan loan { get; set; }
         public List<FamilyMember> familyMembers { get; set; }
-        public List<Parcel> parcels { get; set; }
     }
 }

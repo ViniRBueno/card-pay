@@ -37,7 +37,6 @@ namespace CardPay.Services
                 var family = _context.families.Where(f => f.id_family == loan.id_family).FirstOrDefault();
                 var user = _context.users.Where(u => u.id_user == family.id_user).FirstOrDefault();
                 var members = _context.familyMembers.Where(fm => fm.id_family == family.id_family).ToList();
-                var parcels = _context.parcels.Where(p => p.id_loan == loan.id_loan).ToList();
                 var statusLoan = _context.loanstatuses.Where(s => s.id_loanstatus == loan.id_loanstatus).FirstOrDefault();
 
                 loanListModel.Add(new ListLoanModel()
@@ -48,7 +47,6 @@ namespace CardPay.Services
                     statusName = statusLoan.name_status,
                     loan = loan,
                     familyMembers = members,
-                    parcels = parcels,
                     SLA = (DateTime.Now - loan.create_date).Days
                 });
 
@@ -62,6 +60,7 @@ namespace CardPay.Services
             var loanInfo = new LoanInfoModel();
             loanInfo.loan = _context.loans.Where(l => l.id_loan == id).FirstOrDefault();
             loanInfo.family = _context.families.Where(f => f.id_family == loanInfo.loan.id_family).FirstOrDefault();
+            loanInfo.parcels = _context.parcels.Where(p => p.id_loan == loanInfo.loan.id_loan).ToList();
             return loanInfo;
         }
 
