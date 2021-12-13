@@ -160,7 +160,7 @@ namespace CardPay.Services
             var admin = GetAdminByLogin(loginModel.login);
 
             if (admin == null)
-                return null;
+                throw new System.Exception(loginErr);
 
             if (admin.password != loginModel.password)
                 throw new System.Exception(loginErr);
