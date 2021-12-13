@@ -14,7 +14,7 @@ namespace CardPay.Models
         public string NomeCliente { get; set; }
         public string CpfCliente { get; set; }
         public string NumerBoleto { get; set; }
-        public decimal Valor { get; set; }
+        public double Valor { get; set; }
         public string Descricao { get; set; }
 
         public string CodigoBarras { get; set; }

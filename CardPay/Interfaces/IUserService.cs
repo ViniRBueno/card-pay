@@ -16,5 +16,6 @@ namespace CardPay.Interfaces
         User ValidateUserLogin(LoginModel loginModel);
         Admin ValidateAdminLogin(LoginModel loginModel);
         string ValidatePassword(PasswordModel passwordModel, int userId);
+        bool ValidateCPF(string cpf);
     }
 }

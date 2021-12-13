@@ -107,14 +107,26 @@ namespace CardPay.Services
             parcel.id_status = payed ? 2 : 3;
 
             UpdateRegister(parcel);
+            VerifyLoanStatus(parcel);
 
             return parcel;
+        }
+
+        private void VerifyLoanStatus(Parcel parcel)
+        {
+            var parcelList = _context.parcels.Where(p => p.id_loan == parcel.id_loan).ToList();
+            int paid = parcelList.Select(p => p.id_status == 2).Count();
+            if (paid == parcelList.Count())
+            {
+                var loan = _context.loans.Where(l => l.id_loan == parcel.id_loan).FirstOrDefault();
+                loan.id_loanstatus = 4;
+                UpdateRegister(loan);
+            }
         }
 
         private void CreateParcels(Loan loan)
         {
             var parcelList = new List<Parcel>();
-            ;
             for (int i = 1; i <= loan.total_parcels; i++)
             {
                 var expire = DateTime.Now.AddMonths(i);

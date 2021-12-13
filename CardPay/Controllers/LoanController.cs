@@ -88,9 +88,7 @@ namespace CardPay.Controllers
             var pdfStream = new System.IO.MemoryStream();
             pdfStream.Write(pdf, 0, pdf.Length);
             pdfStream.Position = 0;
-            var result = new FileStreamResult(pdfStream, "application/pdf");
-
-            return Ok(BaseDTO<FileStreamResult>.Success("", result));
+            return new FileStreamResult(pdfStream, "application/pdf");
         }
 
         [HttpGet]

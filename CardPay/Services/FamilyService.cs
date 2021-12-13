@@ -47,8 +47,6 @@ namespace CardPay.Services
         public FamilyMember CreateFamilyMember(FamilyMemberModel memberModel, int userId)
         {
             var familyId = GetFamilyByUserId(userId).id_family;
-            //if (HasActiveLoanRequest(familyId))
-            //    throw new System.Exception("Você não pode criar membros, pois já possui uma requisição de empréstimo em atividade!");
             var familyMember = new FamilyMember(memberModel, familyId);
 
             CreateRegister(familyMember);

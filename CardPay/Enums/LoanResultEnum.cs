@@ -14,6 +14,9 @@ namespace CardPay.Enums
         Avaliable = 3,
         
         [Description("Em Andamento")]
-        InProgress = 4
+        InProgress = 4,
+
+        [Description("Negado análise de fraude")]
+        Fraud = 5
     }
 }
