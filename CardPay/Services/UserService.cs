@@ -135,6 +135,31 @@ namespace CardPay.Services
 
             return null;
         }
+        public string ValidateUser(UserModel user)
+        {
+            if (!ValidateCPF(user.cpf))
+                return "CPF Inválido";
+
+            if (!ValidateEmail(user.email))
+                return "E-mail Inválido!";
+
+            if (!ValidatePassword(user.password))
+                return "Sua senha deve ter ao menos um caractere maiúsculo, um minúsculo, e um caractere especial.";
+
+            if (string.IsNullOrEmpty(user.user_name))
+                return "Você precisa digitar um nome válido";
+
+            if (user.user_name.Length > 100)
+                return "Seu nome deve ter menos de 100 caracteres";
+
+            if (string.IsNullOrEmpty(user.email))
+                return "E-mail inválido";
+
+            if (user.email.Length < 11)
+                return "Seu login deve ter menos de 11 caracteres";
+
+            return null;
+        }
 
         public User ValidateUserLogin(LoginModel loginModel)
         {
@@ -168,32 +193,6 @@ namespace CardPay.Services
             return admin;
         }
 
-        public string ValidateUser(UserModel user)
-        {
-            if (!ValidateCPF(user.cpf))
-                return "CPF Inválido";
-
-            if (!ValidateEmail(user.email))
-                return "E-mail Inválido!";
-
-            if (!ValidatePassword(user.password))
-                return "Sua senha deve ter ao menos um caractere maiúsculo, um minúsculo, e um caractere especial.";
-
-            if (string.IsNullOrEmpty(user.user_name))
-                return "Você precisa digitar um nome válido";
-
-            if (user.user_name.Length > 100)
-                return "Seu nome deve ter menos de 100 caracteres";
-
-            if (string.IsNullOrEmpty(user.email))
-                return "E-mail inválido";
-
-            if (user.email.Length < 11)
-                return "Seu login deve ter menos de 11 caracteres";
-
-            return null;
-        }
-
         public string ValidateExists(string cpf)
         {
             if (_context.users.Where(user => user.cpf == cpf).FirstOrDefault() != null)
@@ -223,7 +222,7 @@ namespace CardPay.Services
                 return false;
         }
 
-        private bool ValidateCPF(string cpf)
+        public bool ValidateCPF(string cpf)
         {
             int[] multiplicador1 = new int[9] { 10, 9, 8, 7, 6, 5, 4, 3, 2 };
             int[] multiplicador2 = new int[10] { 11, 10, 9, 8, 7, 6, 5, 4, 3, 2 };

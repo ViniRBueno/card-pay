@@ -86,6 +86,13 @@ namespace CardPay.Services
                 return result;
             }
 
+            if (loan.id_loanstatus == (int)LoanStatusEnum.Fraud)
+            {
+                result.loanStatusId = LoanResultEnum.Fraud;
+                result.statusDescription = "Negado análise de fraude";
+                return result;
+            }
+
             result.loanStatusId = LoanResultEnum.InProgress;
             result.loanModel = GetLoanWithParcels(id);
 
@@ -122,7 +129,7 @@ namespace CardPay.Services
             boleto.NomeCliente = user.user_name;
             boleto.CpfCliente = user.cpf;
             boleto.NumerBoleto = parcel.id_parcel.ToString();
-            boleto.Valor = parcel.parcel_value;
+            boleto.Valor = (double)parcel.parcel_value;
             boleto.Descricao = $"Parcela número {parcel.parcel_number}";
             boleto.CodigoBarras = parcel.ticket_number;
             boleto.LinhaDigitavel = parcel.ticket_number.Insert(5,"-").Insert(11," ").Insert(18,".").Insert(25, " ").Insert(31, ".").Insert(38," ").Insert(40, " ");
