@@ -122,7 +122,7 @@ namespace CardPay.Services
                 user = GetUserById(userId);
             }
             
-            if (ValidateGetParcel(user, parcel, isAdmin))
+            if (ValidateGetParcel(user, parcel))
                 return null;
 
             var boleto = new ZBoleto();
@@ -139,12 +139,12 @@ namespace CardPay.Services
             return geradorBoleto.GerarBoleto();
         }
 
-        private bool ValidateGetParcel(User user, Parcel parcel, bool IsAdmin)
+        private bool ValidateGetParcel(User user, Parcel parcel)
         {
             var family = GetFamily(user.id_user);
             var loan = _context.loans.Where(l => l.id_loan == parcel.id_loan).FirstOrDefault();
 
-            if (loan.id_family == family.id_family && IsAdmin)
+            if (loan.id_family == family.id_family)
                 return false;
             return true;
         }

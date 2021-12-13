@@ -91,7 +91,7 @@ namespace CardPay.Controllers
 
         private string ValidateMember(FamilyMemberModel familyMemberModel)
         {
-            if (_userService.ValidateCPF(familyMemberModel.cpf))
+            if (!_userService.ValidateCPF(familyMemberModel.cpf))
                 return "CPF Inválido";
 
             var exists = _userService.ValidateExists(familyMemberModel.cpf);
