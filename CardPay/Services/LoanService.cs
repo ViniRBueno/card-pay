@@ -93,6 +93,13 @@ namespace CardPay.Services
                 return result;
             }
 
+            if (loan.id_loanstatus == 4 && loan.create_date <= fiveYears)
+            {
+                result.loanStatusId = LoanResultEnum.Avaliable;
+                result.loanEstimate = CreateEstimateValue(amount);
+                return result;
+            }
+
             if (loan.id_loanstatus == 5)
             {
                 result.loanStatusId = LoanResultEnum.Fraud;
@@ -101,7 +108,8 @@ namespace CardPay.Services
             }
 
             result.loanStatusId = LoanResultEnum.Finished;
-            result.statusDescription = "Empréstimo finalizado";
+            var nextLoan = loan.create_date.AddYears(5);
+            result.statusDescription = $"Empréstimo finalizado, você poderá solicitar outro em: {nextLoan}";
 
             return result;
         }
