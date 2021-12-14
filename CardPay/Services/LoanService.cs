@@ -71,7 +71,21 @@ namespace CardPay.Services
                 return result;
             }
 
-            if (loan.id_loanstatus == (int)LoanStatusEnum.Rejected)
+            if (loan.id_loanstatus == 1)
+            {
+                result.loanStatusId = LoanResultEnum.Waiting;
+                result.statusDescription = "Aguardando Aprovação";
+                return result;
+            }
+
+            if (loan.id_loanstatus == 2)
+            {
+                result.loanStatusId = LoanResultEnum.InProgress;
+                result.loanModel = GetLoanWithParcels(id);
+                return result;
+            }
+
+            if (loan.id_loanstatus == 3)
             {
                 result.loanStatusId = LoanResultEnum.Negated;
                 result.loanEstimate = CreateEstimateValue(amount);
@@ -79,22 +93,15 @@ namespace CardPay.Services
                 return result;
             }
 
-            if (loan.id_loanstatus == (int)LoanStatusEnum.Created)
-            {
-                result.loanStatusId = LoanResultEnum.Waiting;
-                result.statusDescription = "Aguardando Aprovação";
-                return result;
-            }
-
-            if (loan.id_loanstatus == (int)LoanStatusEnum.Fraud)
+            if (loan.id_loanstatus == 5)
             {
                 result.loanStatusId = LoanResultEnum.Fraud;
                 result.statusDescription = "Negado análise de fraude";
                 return result;
             }
 
-            result.loanStatusId = LoanResultEnum.InProgress;
-            result.loanModel = GetLoanWithParcels(id);
+            result.loanStatusId = LoanResultEnum.Finished;
+            result.statusDescription = "Empréstimo finalizado";
 
             return result;
         }
