@@ -47,7 +47,7 @@ namespace CardPay.Services
                     statusName = statusLoan.name_status,
                     loan = loan,
                     familyMembers = members,
-                    SLA = (DateTime.Now - loan.create_date).Days
+                    SLA = (DateTime.Now.AddDays(5) - loan.create_date).Days
                 });
 
             }
@@ -115,8 +115,8 @@ namespace CardPay.Services
         private void VerifyLoanStatus(Parcel parcel)
         {
             var parcelList = _context.parcels.Where(p => p.id_loan == parcel.id_loan).ToList();
-            int paid = parcelList.Select(p => p.id_status == 2).Count();
-            if (paid == parcelList.Count())
+            var paid = parcelList.Where(p => p.id_status == 2).ToList();
+            if (paid.Count() == parcelList.Count())
             {
                 var loan = _context.loans.Where(l => l.id_loan == parcel.id_loan).FirstOrDefault();
                 loan.id_loanstatus = 4;
