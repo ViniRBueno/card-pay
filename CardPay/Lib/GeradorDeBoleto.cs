@@ -76,11 +76,10 @@ namespace CardPay.Lib
             };
 
             boleto.CodigoBarra.LinhaDigitavel = linhaDigitavel;
-            boleto.CodigoBarra.CampoLivre = codigoDeBarras;
+            boleto.CodigoBarra.CampoLivre = codigoDeBarras.Substring(0, 25);
             BoletoBancario boletob = new BoletoBancario();
             boletob.Boleto = boleto;
             var teste22 = boletob.MontaHtml();
-
             return teste22;
         }
 
