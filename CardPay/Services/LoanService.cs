@@ -104,6 +104,7 @@ namespace CardPay.Services
             {
                 result.loanStatusId = LoanResultEnum.Fraud;
                 result.statusDescription = "Negado análise de fraude";
+                result.reason = "Negado análise de fraude";
                 return result;
             }
 
