@@ -119,7 +119,14 @@ namespace CardPay.Services
         {
             var family = GetFamily(id);
             var loan = _context.loans.Where(l => l.id_family == family.id_family && l.id_loanstatus == 2).FirstOrDefault();
-            return _context.parcels.Where(p => p.id_loan == loan.id_loan).ToList();
+            var parcels = _context.parcels.Where(p => p.id_loan == loan.id_loan).ToList();
+
+            foreach (var parcel in parcels)
+            {
+                parcel.id_status = parcel.expire_date < DateTime.Now && parcel.id_status == 1 ? 3 : parcel.id_status;
+            }
+
+            return parcels;
         }
 
         public string GenerateParcelData(int userId, int parcelId, bool isAdmin = false)
